@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Bill extends Model
 {
     use HasFactory;
-
+    
     /**
      * The attributes that are in blacklisted
      *

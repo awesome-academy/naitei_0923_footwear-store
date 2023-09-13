@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CartDetail extends Model
 {
     use HasFactory;
-
+    
     /**
      * One cart_detail belongs to one user
      */
