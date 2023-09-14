@@ -16,6 +16,15 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'is_active' => false,
+    ];
+
+    /**
      * The attributes that are in blacklisted
      *
      * @var array<int, string>
