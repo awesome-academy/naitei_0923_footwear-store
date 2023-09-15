@@ -5,6 +5,7 @@ namespace Tests\Feature\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Support\Str;
 
 class RegistrationTest extends TestCase
 {
@@ -20,13 +21,15 @@ class RegistrationTest extends TestCase
     public function testNewUsersCanRegister()
     {
         $response = $this->post('/register', [
-            'fisrt_name' => 'Test',
+            'first_name' => 'Test',
             'last_name' => 'User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'username' => 'huy123',
+            'phone' => '0981223456',
+            'email' => Str::random(7) . '@example.com',
+            'address' => 'Ahihi',
+            'password' => 'password123@',
+            'password_confirmation' => 'password123@',
         ]);
-
         $this->assertAuthenticated();
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
