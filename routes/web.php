@@ -18,8 +18,8 @@ use App\Http\Controllers\ProfileController;
 Route::controller(ProductController::class)->group(function () {
 
     Route::get('/', 'index')->middleware(['guest_verified_user'])->name('product.index');
-
-    Route::get('/product/{id}', 'show')->name('product.show');
+    Route::get('/product/search', 'search')->middleware(['guest_verified_user'])->name('product.search');
+    Route::get('/product/{id}', 'show')->middleware(['guest_verified_user'])->name('product.show');
 });
 
 Route::get('/dashboard', function () {
