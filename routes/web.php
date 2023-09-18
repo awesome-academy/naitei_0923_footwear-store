@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [ProductController::class,'index'])->name('product.index');
+Route::get('/', [ProductController::class,'index'])->middleware(['guest_verified_user'])->name('product.index');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth','verified'])->name('dashboard');
 
 require __DIR__ . '/auth.php';

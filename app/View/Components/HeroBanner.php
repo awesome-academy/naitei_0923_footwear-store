@@ -6,11 +6,11 @@ use Illuminate\View\Component;
 
 class HeroBanner extends Component
 {
-    public string $smallText;
-    public string $midText;
-    public string $largeText1;
-    public string $desc;
-    public string $image;
+    public $smallText;
+    public $midText;
+    public $largeText1;
+    public $desc;
+    public $image;
     /**
      * Create a new component instance.
      *

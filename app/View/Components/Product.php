@@ -12,10 +12,10 @@ class Product extends Component
      *
      * @return void
      */
-    public string $id;
-    public string $mediaLink;
-    public string $name;
-    public float $price;
+    public $id;
+    public $mediaLink;
+    public $name;
+    public $price;
 
     public function __construct(string $id, string $mediaLink, string $name, float $price)
     {

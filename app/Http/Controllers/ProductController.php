@@ -24,8 +24,8 @@ class ProductController extends Controller
             ->select(['products.name', 'price', 'products.id', 'brand','media_link'])
             ->where('brand', '=', 'Comme des Garcons')
             ->get();
-            
-        return view('welcome', [
+
+        return view('home', [
             'products' => $products,
             'commeShoes' => $commeShoes,
         ]);

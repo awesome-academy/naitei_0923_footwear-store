@@ -12,15 +12,15 @@ class FooterBanner extends Component
      *
      * @return void
      */
-    public string $discount;
-    public string $largeText1;
-    public string $largeText2;
-    public string $saleTime;
-    public string $midText;
-    public string $desc;
-    public string $product;
-    public string $image;
-    public string $smallText;
+    public $discount;
+    public $largeText1;
+    public $largeText2;
+    public $saleTime;
+    public $midText;
+    public $desc;
+    public $product;
+    public $image;
+    public $smallText;
 
     public function __construct(
         string $discount,
