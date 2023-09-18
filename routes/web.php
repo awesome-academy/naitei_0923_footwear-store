@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -18,8 +19,17 @@ use App\Http\Controllers\ProfileController;
 Route::controller(ProductController::class)->group(function () {
 
     Route::get('/', 'index')->middleware(['guest_verified_user'])->name('product.index');
+    
     Route::get('/product/search', 'search')->middleware(['guest_verified_user'])->name('product.search');
-    Route::get('/product/{id}', 'show')->middleware(['guest_verified_user'])->name('product.show');
+
+    Route::get('/product/{id}', 'show')->name('product.show');
+
+    Route::post('/product/add/{id}', 'addToCart')->middleware(['auth', 'verified'])->name('product.addToCart');
+});
+
+Route::controller(CartController::class)->group(function () {
+
+    Route::get('/cart', 'index')->middleware(['auth', 'verified'])->name('cart.index');
 });
 
 Route::get('/dashboard', function () {

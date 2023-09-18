@@ -241,4 +241,15 @@ return [
         'new' => 'Comme des Garcons',
     ],
 
+    'status' => [
+        'success' => true,
+        'fail' => false,
+    ],
+
+    'message' => [
+        'addToCart' => [
+            'success' => 'Added to Cart successfully',
+            'fail' => "Can't add to cart",
+        ],
+    ],
 ];
