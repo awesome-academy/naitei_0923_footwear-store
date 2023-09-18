@@ -17,17 +17,12 @@ class ProductController extends Controller
     {
         $products = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.name', 'price', 'products.id', 'brand','media_link'])
-            ->get();
-        $commeShoes = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
-            ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.name', 'price', 'products.id', 'brand','media_link'])
-            ->where('brand', '=', 'Comme des Garcons')
+            ->select(['products.name', 'price', 'products.id', 'brand', 'media_link'])
+            ->where('product_media.type', '=', config('app.media.bigImg'))
             ->get();
 
         return view('home', [
             'products' => $products,
-            'commeShoes' => $commeShoes,
         ]);
     }
 
@@ -53,14 +48,24 @@ class ProductController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the product's detail.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        //get product
+        $product = Product::with(['productInStocks','productMedias'])->find($id);
+        $name = $product->name;
+        $sizes = $product->productInStocks->pluck('size');
+        $price = $product->productInStocks->pluck('price')->first();
+        $imageQuery = $product->productMedias;
+        $bigImage = $imageQuery->where('type', config('app.media.bigImg'))->pluck('media_link')->first();
+        $smallImages =  $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
+        $suggestedProducts = ProductController::findSuggestedProduct();
+
+        return view('product.show', compact('name', 'price', 'sizes', 'bigImage', 'smallImages', 'suggestedProducts'));
     }
 
     /**
@@ -95,5 +100,17 @@ class ProductController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function findSuggestedProduct()
+    {
+        $suggestedProducts = DB::table('products')
+            ->join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
+            ->join('product_media', 'products.id', '=', 'product_media.product_id')
+            ->select(['products.id', 'media_link', 'name', 'price'])
+            ->where('product_media.type', '=', config('app.media.bigImg'))
+            ->get();
+
+        return $suggestedProducts;
     }
 }

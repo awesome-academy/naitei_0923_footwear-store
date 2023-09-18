@@ -232,4 +232,13 @@ return [
 
     ],
 
+    'media' => [
+        'bigImg' => 'big image',
+        'smallImg' => 'small image',
+    ],
+
+    'homepage' => [
+        'new' => 'Comme des Garcons',
+    ],
+
 ];
