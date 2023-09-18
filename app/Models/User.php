@@ -21,7 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $attributes = [
-        'is_active' => false,
+        'is_active' => true,
     ];
 
     /**
