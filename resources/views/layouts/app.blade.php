@@ -43,7 +43,7 @@
             <div class="footer-container">
                 <p>Ruper All rights Reserverd</p>
                 <p class="icons">
-                    <button class="bg-red-500 p-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+                    <button class="inline-flex items-center p-2 space-x-2 font-semibold text-white bg-red-500 rounded">
                         <svg xmlns="http://www.w3.org/2000/svg" 
                             xmlns:xlink="http://www.w3.org/1999/xlink" 
                             aria-hidden="true" 
@@ -59,7 +59,7 @@
                             </g>
                         </svg>
                     </button>
-                    <button style="background-color: #1DA1F2;" class=" p-2 font-semibold text-white inline-flex items-center space-x-2 rounded">
+                    <button style="background-color: #1DA1F2;" class="inline-flex items-center p-2 space-x-2 font-semibold text-white rounded ">
                         <svg class="w-5 h-5 fill-current" 
                             role="img" 
                             xmlns="http://www.w3.org/2000/svg" 
