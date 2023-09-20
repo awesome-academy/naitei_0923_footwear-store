@@ -102,6 +102,20 @@ class ProductController extends Controller
         //
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $products = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
+            ->join('product_media', 'products.id', '=', 'product_media.product_id')
+            ->select(['products.id', 'media_link', 'name', 'price'])
+            ->where('name', 'like', '%' . $query . '%')
+            ->orWhere('brand', 'like', '%' . $query . '%')
+            ->get();
+
+        return view('product.search', compact('products', 'query'));
+    }
+
     public function findSuggestedProduct()
     {
         $suggestedProducts = DB::table('products')

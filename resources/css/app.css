@@ -890,3 +890,12 @@ span.text-red {
         margin: auto;
     }
 }
+.filter-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-group {
+    margin-right: 10px;
+}
