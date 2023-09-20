@@ -15,11 +15,16 @@ use App\Http\Controllers\ProfileController;
 |
 */
 
-Route::get('/', [ProductController::class,'index'])->middleware(['guest_verified_user'])->name('product.index');
+Route::controller(ProductController::class)->group(function () {
+
+    Route::get('/', 'index')->middleware(['guest_verified_user'])->name('product.index');
+
+    Route::get('/product/{id}', 'show')->name('product.show');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth','verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
