@@ -3,6 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\User;
+use App\View\Actions\ActivateUserAction;
+use App\View\Actions\DeleteUserAction;
+use App\View\Actions\UpdateUserAction;
 use LaravelViews\Facades\Header;
 use LaravelViews\Facades\UI;
 use LaravelViews\Views\TableView;
@@ -11,6 +14,14 @@ use App\View\Filters\CreatedFilter;
 
 class UsersTableView extends TableView
 {
+    /** For actions by item */
+    protected function actionsByRow()
+    {
+        return [
+            new UpdateUserAction,
+            new ActivateUserAction,
+        ];
+    }
     protected function filters()
     {
         return [
