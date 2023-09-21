@@ -110,16 +110,42 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
+        $keyword = $request->input('keyword');
 
         $products = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.id', 'media_link', 'name', 'price'])
-            ->where('name', 'like', '%' . $query . '%')
-            ->orWhere('brand', 'like', '%' . $query . '%')
-            ->get();
+            ->select(['products.name', 'products.id', 'brand', 'media_link', 'gender','color','price','size'])
+            ->where(function ($query) use ($keyword) {
+                $query->orWhere('products.name', 'like', '%' . $keyword . '%')
+                    ->orWhere('brand', 'like', '%' . $keyword . '%');
+            });
 
-        return view('product.search', compact('products', 'query'));
+        if (!empty($request->price)) {
+            $price = $request->price;
+
+            $range = config('app.price_ranges.' . $price);
+
+            if ($range['operator'] === '<') {
+                $products->where('price', $range['operator'], $range['value']);
+            } elseif ($range['operator'] === 'between') {
+                $products->whereBetween('price', $range['values']);
+            } elseif ($range['operator'] === '>') {
+                $products->where('price', $range['operator'], $range['value']);
+            }
+        }
+        if (!empty($request->size)) {
+            $products->where('size', '=', $request->size);
+        }
+        if (!empty($request->color)) {
+            $products->where('color', 'like', $request->color);
+        }
+        if (!empty($request->gender)) {
+            $products->where('product_in_stocks.gender', 'like', $request->gender);
+        }
+
+        $products = $products->orderBy('product_in_stocks.price', 'DESC')->get();
+
+        return view('product.search', compact('products', 'keyword'));
     }
 
     public function findSuggestedProduct()
