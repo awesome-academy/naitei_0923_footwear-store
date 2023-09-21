@@ -8,7 +8,7 @@
                     </div>
                     <div class="small-images-container">
                         @foreach($smallImages as $image)
-                            <img src="{{ asset($image) }}" alt="small images" class="small-image">
+                        <img src="{{ asset($image) }}" alt="small images" class="small-image">
                         @endforeach
                     </div>
                 </div>
@@ -34,11 +34,14 @@
                         </div>
                     </div>
                     <p class="price">$ {{ $price }}</p>
-                    <form action="">
+                    <form method="post" action="{{ route('product.addToCart',[ 'id' => $id ]) }}">
+                        @csrf
+                        @method('POST')
                         <div class="size">
                             <h4>Size</h4>
                             <span class="px-6 py-2">
-                                <select name="size" id="size">
+                                <select name="size" id="size" required>
+                                    <option value="">{{ __('Choose your size') }}</option>
                                     @foreach($sizes as $size)
                                         <option value="{{ $size }}">{{ $size }}</option>
                                     @endforeach
@@ -52,7 +55,7 @@
                             </span>
                         </div>
                         <div class="buttons">
-                            <button class="add-to-cart">
+                            <button type="submit" class="add-to-cart">
                                 <span>{{ __('Add to cart') }}</span>
                             </button>
                             <button class="buy-now">
@@ -61,6 +64,25 @@
                         </div>
                     </form>
                 </div>
+                @if($status = Session::get('status') === true)
+                    <div x-data="{ open: true }">
+                        <div id="popup-modal" tabindex="-1" class="overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                            <div class="relative w-full max-w-md max-h-full" x-show="open">
+                                <div class="relative rounded-lg border border-solid border-green-500">
+                                    <button type="button" class="absolute top-1 right-2 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center text-green-500" x-show="open" @click="open = !open">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                        </svg>
+                                        <span class="sr-only">Close modal</span>
+                                    </button>
+                                    <div class="p-6 text-center">
+                                        <h3 class="text-lg font-normal text-green-500 dark:text-green-400">{{ __(Session::get('message')) }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="maylike-products-wrapper">
                 <h2>{{ __('You may also like') }}</h2>

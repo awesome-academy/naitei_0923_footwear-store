@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddToCartRequest;
+use App\Models\CartDetail;
 use App\Models\Product;
+use App\Models\ProductInStock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -44,7 +48,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -56,7 +59,7 @@ class ProductController extends Controller
     public function show($id)
     {
         //get product
-        $product = Product::with(['productInStocks','productMedias'])->find($id);
+        $product = Product::with(['productInStocks', 'productMedias'])->find($id);
         $name = $product->name;
         $sizes = $product->productInStocks->pluck('size');
         $price = $product->productInStocks->pluck('price')->first();
@@ -65,7 +68,10 @@ class ProductController extends Controller
         $smallImages =  $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
         $suggestedProducts = ProductController::findSuggestedProduct();
 
-        return view('product.show', compact('name', 'price', 'sizes', 'bigImage', 'smallImages', 'suggestedProducts'));
+        return view(
+            'product.show',
+            compact('id', 'name', 'price', 'sizes', 'bigImage', 'smallImages', 'suggestedProducts')
+        );
     }
 
     /**
@@ -126,5 +132,64 @@ class ProductController extends Controller
             ->get();
 
         return $suggestedProducts;
+    }
+
+    public function addToCart(AddToCartRequest $request, $id)
+    {
+        $validated = $request->validated();
+        $size = $validated['size'];
+        $quantity = $validated['quantity'];
+        $user_id = Auth::user()->id;
+        $productInStocks = ProductInStock::where('product_id', $id)
+            ->where('size', $size)
+            ->get(['id', 'quantity'])
+            ->first();
+
+        $cartItem = CartDetail::firstOrNew([
+            'user_id' => $user_id,
+            'product_in_stocks_id' => $productInStocks->id,
+        ]); //check if that item has been in cart
+        $available = ProductController::calculateAvailableProductQuantity(
+            $cartItem,
+            $productInStocks->quantity,
+            $quantity
+        );
+        $cartItem->quantity = $available;
+        $cartItem->save();
+
+        return back()->with([
+            'message' => config('app.message.addToCart.success'),
+            'status' => config('app.status.success'),
+        ]);
+    }
+
+    /**
+     * Calculate available quantity of product .
+     *
+     * @param  object  $cartItem
+     * @param  int  $stocksQuantity
+     * @param  int  $expectQuantity
+     * @return \Illuminate\Http\Response
+     */
+
+    public function calculateAvailableProductQuantity($cartItem, int $stocksQuantity, int $expectQuantity): int
+    {
+        $availableQuantity = 0;
+        if ($cartItem->quantity === null) {
+            if ($stocksQuantity <= $expectQuantity) {
+                $availableQuantity = $stocksQuantity;
+            } else {
+                $availableQuantity = $expectQuantity;
+            }
+        } else {
+            $totalQuantity = $expectQuantity + $cartItem->quantity;
+            if ($stocksQuantity <= $totalQuantity) {
+                $availableQuantity = $stocksQuantity;
+            } else {
+                $availableQuantity = $totalQuantity;
+            }
+        }
+
+        return $availableQuantity;
     }
 }

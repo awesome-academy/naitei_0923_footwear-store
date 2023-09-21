@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductInStock extends Model
@@ -39,8 +40,8 @@ class ProductInStock extends Model
     /**
      * One product in stock can be in many cart_details
      */
-    public function cartDetails(): HasMany
+    public function cartDetail(): BelongsTo
     {
-        return $this->hasMany(CartDetails::class);
+        return $this->belongsTo(CartDetails::class);
     }
 }
