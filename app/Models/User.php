@@ -115,4 +115,15 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(CartDetail::class);
     }
+
+    public function hasRole($role)
+    {
+        $roleId = Role::where('role', '=', $role)->first();
+
+        if (!$this->roles->contains($roleId)) {
+            return false;
+        }
+
+        return true;
+    }
 }
