@@ -8,7 +8,7 @@
                             <div class="col-span-2 p-5">
                                 <h2 class="text-xl font-medium ">
                                     {{ __('Shopping Cart') }}
-                                    @if($status = Session::get('status') === true)
+                                    @if ($status = Session::get('status') === true)
                                         <button x-data="{ open: true }">
                                             <span class="text-red-500 font-medium text-lg mx-5" 
                                                 x-show="open" 
@@ -18,24 +18,34 @@
                                         </button>
                                     @endif
                                 </h2>
-                                @foreach($cartItems as $cartItem)
-                                    <x-cart-item id="{{ $cartItem->id }}" 
-                                        product-id="{{ $cartItem->product_id }}" 
-                                        name="{{ $cartItem->name }}" 
-                                        price="{{ $cartItem->price }}" 
-                                        quantity="{{ $cartItem->quantity }}" 
-                                        media-link="{{ $cartItem->media_link }}" />
-                                @endforeach
-                                <div class="flex justify-between items-center mt-6 pt-6 border-t">
-                                    <div class="flex justify-center items-end">
-                                        <span class="text-sm font-medium text-gray-400 mr-1">{{ _('Subtotal') }}: $</span>
-                                        <span class="text-lg font-bold text-gray-800 " id="sub-total"> {{$subTotal}}</span>
+                                @if ($cartItems->count() > 0)
+                                    @foreach ($cartItems as $cartItem)
+                                        <x-cart-item id="{{ $cartItem->id }}" 
+                                            product-id="{{ $cartItem->product_id }}" 
+                                            name="{{ $cartItem->name }}" 
+                                            price="{{ $cartItem->price }}" 
+                                            quantity="{{ $cartItem->quantity }}" 
+                                            media-link="{{ $cartItem->media_link }}" />
+                                    @endforeach
+                                    <div class="flex justify-between items-center mt-6 pt-6 border-t">
+                                        <div class="flex justify-center items-end">
+                                            <span class="text-sm font-medium text-gray-400 mr-1">{{ _('Subtotal') }}: $</span>
+                                            <span class="text-lg font-bold text-gray-800 " id="sub-total"> {{$subTotal}}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <form method="post" action="{{ route('cart.checkout') }}">
+                                                @csrf
+                                                @method('POST')
+                                                <i class="fa fa-arrow-left text-sm pr-2"></i>
+                                                <button type="submit" class="btn">
+                                                    <span >{{ _('Check out') }}</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center">
-                                        <i class="fa fa-arrow-left text-sm pr-2"></i>
-                                        <span class="btn ">{{ _('Check out') }}</span>
-                                    </div>
-                                </div>
+                                @else
+                                    <div class="text-xl font-medium py-5 flex justify-center">{{ __('Cart empty')}}</div>
+                                @endif
                             </div>
                         </div>
                     </div>

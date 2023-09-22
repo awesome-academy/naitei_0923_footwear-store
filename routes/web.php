@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\UserController;
 Route::controller(ProductController::class)->group(function () {
 
     Route::get('/', 'index')->middleware(['guest_verified_user'])->name('product.index');
-    
+
     Route::get('/product/search', 'search')->middleware(['guest_verified_user'])->name('product.search');
 
     Route::get('/product/{id}', 'show')->name('product.show');
@@ -34,6 +35,8 @@ Route::controller(CartController::class)->group(function () {
 
     Route::get('/cart/{update}/{id}', 'updateQuantity')->name('cart.update');
 
+    Route::post('/cart/checkout', 'checkout')->name('cart.checkout');
+
     Route::post('/cart/{id}', 'destroy')->name('cart.destroy');
 });
 
@@ -42,6 +45,12 @@ Route::get('/product', [ProductController::class, 'indexAdmin'])->middleware([
     'verified',
     'role:admin',
 ])->name('product.indexAdmin');
+Route::controller(OrderController::class)->group(function () {
+
+    Route::get('/checkout', 'index')->middleware(['auth', 'verified'])->name('order.index');
+
+    Route::post('/order/store/{total}', 'placeOrder')->middleware(['auth', 'verified'])->name('order.store');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
