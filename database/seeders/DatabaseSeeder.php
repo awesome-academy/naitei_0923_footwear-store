@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             UpdateProductMediaSeeder::class,
             AddProductSeeder::class,
             AddProductInStocksAndProductMediaSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }

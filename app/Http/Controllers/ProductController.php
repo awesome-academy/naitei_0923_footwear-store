@@ -9,6 +9,7 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductInStock;
 use App\Models\ProductMedia;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -149,6 +150,8 @@ class ProductController extends Controller
                 $isFavourite = true;
             }
         }
+        $comments = ProductController::getProductComments($id);
+        $averagePoint = ProductController::getAveragePoint($comments);
 
         return view(
             'product.show',
@@ -163,6 +166,8 @@ class ProductController extends Controller
                 'gender',
                 'type',
                 'isFavourite',
+                'comments',
+                'averagePoint',
             )
         );
     }
@@ -427,5 +432,29 @@ class ProductController extends Controller
         }
 
         return $availableQuantity;
+    }
+
+    public function getProductComments(int $id)
+    {
+        $comments = DB::table('users')
+            ->join('reviews', 'users.id', '=', 'reviews.user_id')
+            ->select(['username', 'point', 'comment', 'reviews.created_at'])
+            ->where('product_id', '=', $id)
+            ->get();
+
+        return $comments;
+    }
+
+    public function getAveragePoint($comments)
+    {
+        $totalPoint = 0;
+        if ($comments->count() > 0) {
+            foreach ($comments as $comment) {
+                $totalPoint += $comment->point;
+            }
+            $totalPoint = ceil($totalPoint / $comments->count() / config('app.point'));
+        }
+
+        return $totalPoint;
     }
 }

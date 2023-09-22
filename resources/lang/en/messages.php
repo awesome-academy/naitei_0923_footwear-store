@@ -22,4 +22,5 @@ return [
         'removed' => "Removed from Favourites",
         'fail' => "Can't add item to Favourites",
     ],
+    'no_comment' => 'This product has no reviews',
 ];

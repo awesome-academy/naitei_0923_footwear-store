@@ -931,3 +931,7 @@ span.text-red {
 .swiper-button-prev, .swiper-button-next{
     color: gray;
 }
+
+.product-rating-list {
+    width: 1200px;
+}

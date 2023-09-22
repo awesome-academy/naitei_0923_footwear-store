@@ -307,4 +307,8 @@ return [
             'default' => 0.5,
         ],
     ],
+
+    'point' => 2,
+    
+    'max_point' => 5,
 ];
