@@ -1,5 +1,5 @@
 require("./bootstrap");
-
+import Swiper from "swiper/bundle";
 import Alpine from "alpinejs";
 import { increaseCart, decreaseCart } from "./route";
 window.Alpine = Alpine;
@@ -43,3 +43,21 @@ Alpine.start();
     };
     global.$global = $global;
 })(window);
+
+var mySwiper = new Swiper(".swiper", {
+    direction: "horizontal",
+    slidesPerView: 5,
+    spaceBetween: 10,
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+    scrollbar: {
+        el: ".swiper-scrollbar",
+    },
+});
+window.Swiper = Swiper;

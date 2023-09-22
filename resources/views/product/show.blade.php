@@ -4,12 +4,13 @@
             <div class="product-detail-container">
                 <div>
                     <div class="image-container">
-                        <img src="{{ asset($bigImage) }}" alt="{{ $name }}" class="product-detail-image">
-                    </div>
-                    <div class="small-images-container">
-                        @foreach($smallImages as $image)
-                        <img src="{{ asset($image) }}" alt="small images" class="small-image">
-                        @endforeach
+                        <div class="grid grid-cols-4 text-base gap-2 relative">
+                            @foreach ($smallImages as $image)
+                                <div class="col-span-2">
+                                    <img src="{{ asset($image) }}" alt="images" class="product-detail-image">
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
                 <div class="product-detail-desc">
@@ -37,22 +38,46 @@
                     <form method="post" action="{{ route('product.addToCart',[ 'id' => $id ]) }}">
                         @csrf
                         @method('POST')
-                        <div class="size">
-                            <h4>Size</h4>
-                            <span class="px-6 py-2">
-                                <select name="size" id="size" required>
-                                    <option value="">{{ __('Choose your size') }}</option>
-                                    @foreach($sizes as $size)
-                                        <option value="{{ $size }}">{{ $size }}</option>
-                                    @endforeach
-                                </select>
-                            </span>
+                        <div class="info-container flex">
+                            <h3 class="py-2 text-base">{{ __('Color') }}: </h3>
+                            <div class="py-2 px-4">
+                                @foreach ($colors as $color)
+                                    {{$color }}
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="quantity">
+                        <div class="info-container flex">
+                            <h3 class="py-2 text-base">{{ __('Gender') }}: </h3>
+                            <div class="py-2 px-4">
+                                @foreach ($genders as $gender)
+                                    {{ __($gender) }}
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="info-container flex">
+                            <h3 class="py-2 text-base">{{ __('Type') }}:</h3>
+                            <div class="py-2 px-4">
+                                @foreach ($types as $type)
+                                    <span>{{ $type }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div>
+                            <h4>{{ __('Size') }}</h4>
+                            <div class="grid gap-2 grid-cols-4">
+                                @foreach (config('app.size_ranges') as $size)
+                                    <div class="radio-button">
+                                        <input class="visually-hidden" type="radio" value="{{ $size }}" name="size" id="size"{{ !$sizes->contains($size) ? 'disabled' : 'checked' }}>
+                                        <label class="label" for="color">{{ $size }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="py-2">
                             <h3>{{ __('Quantity') }}</h3>
-                            <span class="num">
-                                <input class="" type="number" name="quantity" id="quantity" value="1" min="1">
-                            </span>
+                            <div>
+                                <input class="" type="number" name="quantity" id="quantity" value="1" min="1" max="12">
+                            </div>
                         </div>
                         <div class="buttons">
                             <button type="submit" class="add-to-cart">
@@ -65,35 +90,42 @@
                     </form>
                 </div>
                 @if($status = Session::get('status') === true)
-                    <div x-data="{ open: true }">
-                        <div id="popup-modal" tabindex="-1" class="overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                            <div class="relative w-full max-w-md max-h-full" x-show="open">
-                                <div class="relative rounded-lg border border-solid border-green-500">
-                                    <button type="button" class="absolute top-1 right-2 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center text-green-500" x-show="open" @click="open = !open">
-                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                        </svg>
-                                        <span class="sr-only">Close modal</span>
-                                    </button>
-                                    <div class="p-6 text-center">
-                                        <h3 class="text-lg font-normal text-green-500 dark:text-green-400">{{ __(Session::get('message')) }}</h3>
-                                    </div>
+                <div x-data="{ open: true }">
+                    <div id="popup-modal" tabindex="-1" class="overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative w-full max-w-md max-h-full" x-show="open">
+                            <div class="relative rounded-lg border border-solid border-green-500">
+                                <button type="button" class="absolute top-1 right-2 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center text-green-500" x-show="open" @click="open = !open">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                </button>
+                                <div class="p-6 text-center">
+                                    <h3 class="text-lg font-normal text-green-500 dark:text-green-400">{{ __(Session::get('message')) }}</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 @endif
             </div>
             <div class="maylike-products-wrapper">
                 <h2>{{ __('You may also like') }}</h2>
-                <div class="marquee">
-                    <div class="maylike-products-container track">
-                        @foreach($suggestedProducts as $product)
-                            <x-product id="{{ $product-> id}}" 
-                                media-link="{{ $product->media_link }}" 
-                                name="{{ $product->name }}" 
-                                price="{{ $product->price }}" />
-                        @endforeach
+                <div class="swiper-container" style="padding-left: 180px;">
+                    <div class="container">
+                        <div class="swiper">
+                            <div class="swiper-wrapper">
+                                @foreach ($suggestedProducts as $product)
+                                    <div class="swiper-slide">
+                                        <x-product id="{{ $product-> id}}"
+                                            media-link="{{ $product->media_link }}"
+                                            name="{{ $product->name }}"
+                                            price="{{ $product->price }}" />
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        </div>
                     </div>
                 </div>
             </div>

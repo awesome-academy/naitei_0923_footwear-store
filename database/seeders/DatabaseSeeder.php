@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             AddProductMediaSeeder::class,
             BillSeeder::class,
             BillProductSeeder::class,
+            UpdateProductMediaSeeder::class,
         ]);
     }
 }

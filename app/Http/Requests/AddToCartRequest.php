@@ -30,6 +30,9 @@ class AddToCartRequest extends FormRequest
         return [
             'size' => 'required',
             'quantity' => 'required',
+            'color' => 'required',
+            'gender' => 'required',
+            'type' => 'required',
         ];
     }
 }
