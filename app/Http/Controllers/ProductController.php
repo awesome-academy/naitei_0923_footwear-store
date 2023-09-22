@@ -133,7 +133,7 @@ class ProductController extends Controller
         $color = $request->query('color');
         $gender = $request->query('gender');
         $type = $request->query('type');
-        $product = Product::with(['productInStocks', 'productMedias'])->find($id);
+        $product = Product::with(['productInStocks', 'productMedias', 'users'])->find($id);
         $name = $product->name;
         $sizes = $product->productInStocks->pluck('size');
         $color = $product->productInStocks->where('color', $color)->pluck('color')->first();
@@ -143,6 +143,12 @@ class ProductController extends Controller
         $imageQuery = $product->productMedias;
         $smallImages =  $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
         $suggestedProducts = ProductController::findSuggestedProduct($product);
+        $isFavourite = false;
+        if (Auth::check()) {
+            if ($product->users->pluck('id')->contains(Auth::user()->id)) {
+                $isFavourite = true;
+            }
+        }
 
         return view(
             'product.show',
@@ -156,6 +162,7 @@ class ProductController extends Controller
                 'color',
                 'gender',
                 'type',
+                'isFavourite',
             )
         );
     }
