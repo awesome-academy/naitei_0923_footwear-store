@@ -256,4 +256,34 @@ return [
             'fail' => "Can't delete from cart",
         ],
     ],
+
+    'price_ranges' => [
+        'lt_50' => [
+            'operator' => '<',
+            'value' => 50,
+        ],
+        '50_200' => [
+            'operator' => 'between',
+            'values' => [50, 200],
+        ],
+        '200_500' => [
+            'operator' => 'between',
+            'values' => [200, 500],
+        ],
+        'gt_500' => [
+            'operator' => '>',
+            'value' => 500,
+        ],
+    ],
+    'size_ranges' => [
+        '36' => 36,
+        '37' => 37,
+        '38' => 38,
+        '39' => 39,
+        '40' => 40,
+        '41' => 41,
+        '42' => 42,
+        '43' => 43,
+        '44' => 44,
+    ],
 ];

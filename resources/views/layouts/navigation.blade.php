@@ -74,8 +74,8 @@
                 </li>
                 <li>
                     <form action="{{ route('product.search') }}" method="GET" class = "flex item-center">
-                        <input type="text" name="query" placeholder="Search products..." class="border border-gray-300 rounded-l px-4 py-2">
-                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-r">{{ __('Search')}}</button>
+                        <input type="text" name="keyword" placeholder="Search products..." class="border border-gray-300 rounded-l px-4 py-2">
+                        <button type="submit" class="bg-red-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-r">{{ __('Search')}}</button>
                     </form>
                 </li>
             </ul>
