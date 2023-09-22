@@ -117,7 +117,7 @@ class BillController extends Controller
         $bill->save();
 
         return back()->with([
-            'message' => config('app.message.deleteCart.success'),
+            'message' => __('messages.deleteCart.success'),
             'status' => config('app.status.success'),
         ]);
     }

@@ -242,6 +242,7 @@ return [
         'cart' => [
             'default' => 0,
         ],
+        'productQuantity' => 25,
     ],
 
     'status' => [
@@ -260,21 +261,6 @@ return [
     ],
 
     'no_product_image' => 'storage/images/logo/no-product-image.png',
-
-    'message' => [
-        'addToCart' => [
-            'success' => 'Added to Cart successfully',
-            'fail' => "Can't add to cart",
-        ],
-        'deleteCart' => [
-            'success' => 'Deleted item from Cart successfully',
-            'fail' => "Can't delete from cart",
-        ],
-        'addReview' => [
-            'success' => 'Add review successfully',
-            'fail' => "Can't add review",
-        ]
-    ],
 
     'price_ranges' => [
         'lt_50' => [

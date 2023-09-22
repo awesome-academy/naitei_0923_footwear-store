@@ -35,31 +35,25 @@
                         </div>
                     </div>
                     <p class="price">$ {{ $price }}</p>
-                    <form method="post" action="{{ route('product.addToCart',[ 'id' => $id ]) }}">
+                    <form method="post" action="{{ route('product.addToCart',[ 'id' => $id, 'type' => $type, 'color' => $color, 'gender' => $gender ]) }}">
                         @csrf
                         @method('POST')
                         <div class="info-container flex">
                             <h3 class="py-2 text-base">{{ __('Color') }}: </h3>
                             <div class="py-2 px-4">
-                                @foreach ($colors as $color)
-                                    {{$color }}
-                                @endforeach
+                                {{ __($color) }}
                             </div>
                         </div>
                         <div class="info-container flex">
                             <h3 class="py-2 text-base">{{ __('Gender') }}: </h3>
                             <div class="py-2 px-4">
-                                @foreach ($genders as $gender)
-                                    {{ __($gender) }}
-                                @endforeach
+                                {{ __($gender) }}
                             </div>
                         </div>
                         <div class="info-container flex">
                             <h3 class="py-2 text-base">{{ __('Type') }}:</h3>
                             <div class="py-2 px-4">
-                                @foreach ($types as $type)
-                                    <span>{{ $type }}</span>
-                                @endforeach
+                                <span>{{ __($type) }}</span>
                             </div>
                         </div>
                         <div>
@@ -67,8 +61,8 @@
                             <div class="grid gap-2 grid-cols-4">
                                 @foreach (config('app.size_ranges') as $size)
                                     <div class="radio-button">
-                                        <input class="visually-hidden" type="radio" value="{{ $size }}" name="size" id="size"{{ !$sizes->contains($size) ? 'disabled' : 'checked' }}>
-                                        <label class="label" for="color">{{ $size }}</label>
+                                        <input class="visually-hidden h-full" type="radio" value="{{ $size }}" name="size" id="size" {{ !$sizes->contains($size) ? 'disabled' : 'checked' }}>
+                                        <label class="label" for="size">{{ $size }}</label>
                                     </div>
                                 @endforeach
                             </div>
@@ -119,7 +113,10 @@
                                         <x-product id="{{ $product-> id}}"
                                             media-link="{{ $product->media_link }}"
                                             name="{{ $product->name }}"
-                                            price="{{ $product->price }}" />
+                                            price="{{ $product->price }}" 
+                                            color="{{ $product->color }}"
+                                            gender="{{ $product->gender }}"
+                                            type="{{ $product->type }}" />
                                     </div>
                                 @endforeach
                             </div>

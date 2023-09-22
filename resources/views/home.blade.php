@@ -14,7 +14,10 @@
                                 <x-product id="{{ $product->id }}"
                                     media-link="{{ $product->media_link }}"
                                     name="{{ $product->name }}"
-                                    price="{{ $product->price }}" />
+                                    price="{{ $product->price }}" 
+                                    color="{{ $product->color }}"
+                                    gender="{{ $product->gender }}"
+                                    type="{{ $product->type }}" />
                             </div>
                         @endforeach
                     </div>

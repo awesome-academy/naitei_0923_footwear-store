@@ -1,8 +1,11 @@
 <div class="flex justify-between items-center mt-6 pt-6">
-    <a href="{{ route('product.show',['id' => $productId ])}}" class="flex items-center">
+    <a href="{{ route('product.show',[ 'id' => $productId, 'type' => $type, 'color' => $color, 'gender' => $gender ]) }}" class="flex items-center">
         <img src="{{ asset($mediaLink) }}" class="small-image">
         <div class="flex flex-col ml-3">
             <span class="md:text-md font-medium">{{ __($name) }}</span>
+            <span class="md:text-md text-sm font-medium text-gray-600 mr-1">{{ __($gender . "'s shoes") }}</span>
+            <span class="md:text-md text-sm font-medium text-gray-600 mr-1">{{ __('Color') }}: {{ __($color) }}</span>
+            <span class="md:text-md text-sm font-medium text-gray-600 mr-1">{{ __('Size') }}: {{ __($size) }}</span>
         </div>
     </a>
     <div class="flex justify-center items-center">
@@ -13,7 +16,7 @@
             <span class="font-semibold focus:outline-none bg-gray-100 border border-black h-6 w-8 text-md px-2">
                 <button class="w-full" onclick="$global.decreaseQuantity('{{ $id }}')">-</button>
             </span>
-            <input type="text" name="quantity" id="{{ $id }}" class="focus:outline-none bg-gray-100 border h-6 w-8 text-md px-2" value="{{ $quantity }}">
+            <span id="{{ $id }}" class="focus:outline-none bg-gray-100 border h-6 w-12 text-md px-2 border border-solid border-black">{{ $quantity }}</span>
             <span class="font-semibold focus:outline-none bg-gray-100 border border-black h-6 w-8 text-md px-2">
                 <button class="w-full" onclick="$global.increaseQuantity('{{ $id }}')">+</button>
             </span>
