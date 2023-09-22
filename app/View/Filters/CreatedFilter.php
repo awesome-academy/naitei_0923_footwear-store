@@ -17,6 +17,6 @@ class CreatedFilter extends DateFilter
      */
     public function apply(Builder $query, Carbon $value, $request)
     {
-        $query->where('created_at', '>', $value);
+        $query->whereDate('created_at', '=', $value);
     }
 }

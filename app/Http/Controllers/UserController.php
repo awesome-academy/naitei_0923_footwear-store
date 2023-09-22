@@ -99,7 +99,7 @@ class UserController extends Controller
         $user->email = $validatedData['email'];
         $user->phone = $validatedData['phone'];
         $user->address = $validatedData['address'];
-        
+
         $user->save();
 
         return redirect()->route('users.edit', $user)->with('status', 'user-updated');

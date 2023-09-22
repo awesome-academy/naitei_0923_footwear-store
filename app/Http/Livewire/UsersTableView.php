@@ -4,7 +4,6 @@ namespace App\Http\Livewire;
 
 use App\Models\User;
 use App\View\Actions\ActivateUserAction;
-use App\View\Actions\DeleteUserAction;
 use App\View\Actions\UpdateUserAction;
 use LaravelViews\Facades\Header;
 use LaravelViews\Facades\UI;
@@ -46,13 +45,13 @@ class UsersTableView extends TableView
     public function headers(): array
     {
         return [
-            __('Name'),
+            Header::title(__('Name')),
             Header::title(__('Username'))->sortBy('username'),
             Header::title(__('Email'))->sortBy('email'),
-            __('Active'),
-            __('Role'),
-            __('Phone'),
-            __('Address'),
+            Header::title(__('Active'))->sortBy('is_active'),
+            Header::title(__('Role')),
+            Header::title(__('Phone'))->sortBy('phone'),
+            Header::title(__('Address')),
             Header::title(__('Created'))->sortBy('created_at'),
         ];
     }
