@@ -31,6 +31,10 @@ Route::controller(ProductController::class)->group(function () {
 Route::controller(CartController::class)->group(function () {
 
     Route::get('/cart', 'index')->middleware(['auth', 'verified'])->name('cart.index');
+
+    Route::get('/cart/{update}/{id}', 'updateQuantity')->name('cart.update');
+
+    Route::post('/cart/{id}', 'destroy')->name('cart.destroy');
 });
 
 Route::get('/dashboard', function () {

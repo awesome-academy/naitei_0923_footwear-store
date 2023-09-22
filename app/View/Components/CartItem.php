@@ -2,6 +2,7 @@
 
 namespace App\View\Components;
 
+use Dotenv\Util\Str;
 use Illuminate\View\Component;
 
 class CartItem extends Component
@@ -11,9 +12,23 @@ class CartItem extends Component
      *
      * @return void
      */
-    public function __construct()
+    public $productId;
+    public $id;
+    public $name;
+    public $mediaLink;
+    public $price;
+    public $quantity;
+    public $fullPrice;
+    public function __construct(int $id, int $productId, string $name, int $quantity, float $price, string $mediaLink)
     {
-        //
+        $this->id = $id;
+        $this->productId = $productId;
+        $this->name = $name;
+        $this->mediaLink = $mediaLink;
+        $this->price = $price;
+        $this->mediaLink = $mediaLink;
+        $this->quantity = $quantity;
+        $this->fullPrice = $price * $quantity;
     }
 
     /**

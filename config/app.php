@@ -251,5 +251,9 @@ return [
             'success' => 'Added to Cart successfully',
             'fail' => "Can't add to cart",
         ],
+        'deleteCart' => [
+            'success' => 'Deleted item from Cart successfully',
+            'fail' => "Can't delete from cart",
+        ],
     ],
 ];
