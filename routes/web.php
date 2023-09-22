@@ -37,6 +37,12 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/cart/{id}', 'destroy')->name('cart.destroy');
 });
 
+Route::get('/product', [ProductController::class, 'indexAdmin'])->middleware([
+    'auth',
+    'verified',
+    'role:admin',
+])->name('product.indexAdmin');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');

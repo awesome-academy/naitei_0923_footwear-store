@@ -1,7 +1,7 @@
 @props([
   'image' => '',
-  'title' => '',
-  'subtitle' => '',
+  'name' => '',
+  'brand' => '',
   'description' => '',
   'withBackground' => false,
   'model',
@@ -25,28 +25,28 @@
         <h3 class="font-bold leading-6 text-gray-900">
           @if ($hasDefaultAction)
             <a href="#!" class="hover:underline" wire:click.prevent="onCardClick({{ $model->getKey() }})">
-              {!! $title !!}
+              {!! $brand !!}
             </a>
           @else
-            {!! $title !!}
+            {!! $brand !!}
           @endif
         </h3>
-        @if ($subtitle)
+        @if ($name)
           <span class="text-sm text-gray-600">
-            {!! $subtitle !!}
+            {!! $name !!}
           </span>
         @endif
       </div>
 
       @if (count($actions))
-        <div class="flex justify-end items-center">
+        <div class="flex items-center justify-end">
           <x-lv-actions.drop-down :actions="$actions" :model="$model" />
         </div>
       @endif
     </div>
 
     @if (isset($description))
-      <p class="line-clamp-3 mt-2">
+      <p class="mt-2 line-clamp-3">
         {!! $description !!}
       </p>
     @endif
