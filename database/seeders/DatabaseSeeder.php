@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             ProductMediaSeeder::class,
             ProductInStockSeeder::class,
             AddProductMediaSeeder::class,
+            BillSeeder::class,
+            BillProductSeeder::class,
         ]);
     }
 }

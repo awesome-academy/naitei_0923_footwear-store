@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,13 @@ Route::get('/product', [ProductController::class, 'indexAdmin'])->middleware([
     'verified',
     'role:admin',
 ])->name('product.indexAdmin');
+
+Route::controller(BillController::class)->group(function () {
+
+    Route::get('/bill', 'index')->middleware(['auth', 'verified'])->name('bill.index');
+    
+    Route::get('/bill/{bill}', 'show')->middleware(['auth', 'verified'])->name('bill.show');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
