@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Product;
+use App\View\Actions\UpdateProductAction;
 use App\View\Filters\ProductBrandFilter;
 use Illuminate\Database\Eloquent\Builder;
 use LaravelViews\Views\GridView;
@@ -10,6 +11,12 @@ use LaravelViews\Views\GridView;
 class ProductsGridView extends GridView
 {
 
+    protected function actionsByRow()
+    {
+        return [
+            new UpdateProductAction,
+        ];
+    }
     public $maxCols = 4;
 
     public $withBackground = true;
@@ -42,19 +49,37 @@ class ProductsGridView extends GridView
      */
     public function card($product)
     {
-        $big_image = $product->productMedias->where('type', 'big image')->first()->media_link;
-        
-        if ($big_image === null) {
-            $big_image = '';
+        $big_image = config('app.no_product_image');
+        $product_media = $product->productMedias->where('type', 'big image')->first();
+        $description = '';
+        if ($product->deleted_at) {
+            $description = __("This product has been deleted. It's unavailable now.");
+        } else {
+            if ($product->productInStocks->count() === 0) {
+                $description = __("This product is unavailable now. You can add product's quantity.");
+            } else {
+                $description = __("This product is out of stock. You can update product's quantity.");
+                foreach ($product->productInStocks as $productInStock) {
+                    if ($productInStock->quantity != 0) {
+                        $description = __("This product is available.");
+                        break;
+                    }
+                }
+            }
+        }
+        if ($product_media != null) {
+            $big_image = $product_media->media_link;
         }
         return [
             'image' => $big_image,
             'brand' => $product->brand,
             'name' => $product->name,
+            'description' => $description,
         ];
     }
 
     public function onCardClick(Product $product)
     {
+        return redirect()->route('product.show', $product);
     }
 }
