@@ -239,11 +239,24 @@ return [
 
     'homepage' => [
         'new' => 'Comme des Garcons',
+        'cart' => [
+            'default' => 0,
+        ],
     ],
 
     'status' => [
         'success' => true,
         'fail' => false,
+        'pending' => 'pending',
+        'cancelled' => 'cancelled',
+        'manual' => 'manual verification required',
+        'confirmed' => 'confirmed',
+        'declined' => 'declined',
+        'awating' => 'awaiting shipment',
+        'shipping' => 'being shipped',
+        'shipped' => 'complete shipping',
+        'cant_ship' => 'being returned',
+        'completed' => 'completed',
     ],
 
     'message' => [
@@ -285,5 +298,17 @@ return [
         '42' => 42,
         '43' => 43,
         '44' => 44,
+    ],
+
+    'payment' => [
+        'cash' => 'Cash on delivery',
+        'online' => 'Pay online',
+    ],
+
+    'shipping' => [
+        'default' => 'regular',
+        'fee' => [
+            'default' => 0.5,
+        ],
     ],
 ];

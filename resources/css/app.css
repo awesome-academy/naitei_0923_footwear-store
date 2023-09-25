@@ -177,18 +177,6 @@ span.text-red {
     z-index: 10000 !important;
 }
 
-.btn {
-    border-radius: 15px;
-    padding: 10px 16px;
-    background-color: #f02d34;
-    color: white;
-    border: none;
-    margin-top: 40px;
-    font-size: 18px;
-    font-weight: 500;
-    cursor: pointer;
-    z-index: 10000 !important;
-}
 .hero-banner-container h3 {
     font-size: 4rem;
     margin-top: 4px;
@@ -465,8 +453,6 @@ span.text-red {
     border-radius: 15px;
     border: none;
     font-size: 20px;
-    margin-top: 10px;
-    margin-top: 40px;
     text-transform: uppercase;
     background-color: #f02d34;
     color: #fff;

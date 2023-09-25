@@ -29,12 +29,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $cartItemCount = 0;
-        if (Auth::check() === true) {
-            $cartItemCount = CartDetail::where('user_id', Auth::user()->id)->count();
-        }
-        View::share([
-            'cartItemCount' => $cartItemCount,
-        ]);
+        view()->composer('*', function ($view) {
+            $cartItemCount = 0;
+            if (Auth::check()) {
+                $cartItemCount = CartDetail::where('user_id', Auth::user()->id)->count();
+                $view->with('cartItemCount', $cartItemCount);
+            } else {
+                $view->with('cartItemCount', config('app.homepage.cart.default'));
+            }
+        });
     }
 }

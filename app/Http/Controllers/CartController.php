@@ -67,4 +67,12 @@ class CartController extends Controller
             'status' => config('app.status.success'),
         ]);
     }
+
+    /**
+     * Checkout and move to order view
+     */
+    public function checkout(Request $request)
+    {
+        return redirect()->route('order.index');
+    }
 }
