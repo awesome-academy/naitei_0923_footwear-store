@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
@@ -65,6 +66,13 @@ Route::controller(OrderController::class)->group(function () {
     Route::get('/checkout', 'index')->middleware(['auth', 'verified'])->name('order.index');
 
     Route::post('/order/store/{total}', 'placeOrder')->middleware(['auth', 'verified'])->name('order.store');
+});
+
+Route::controller(BillController::class)->group(function () {
+
+    Route::get('/bill', 'index')->middleware(['auth', 'verified'])->name('bill.index');
+    
+    Route::get('/bill/{bill}', 'show')->middleware(['auth', 'verified'])->name('bill.show');
 });
 
 Route::get('/dashboard', function () {

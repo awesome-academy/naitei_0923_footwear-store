@@ -30,8 +30,24 @@ class CreateInitialAdminAccount extends Seeder
             'address' => 'Ha Noi',
         ]);
 
+        User::create([
+            'email' => 'user@sun-asterisk.com',
+            'password' => bcrypt('12345678'),
+            'first_name' => 'User',
+            'last_name' => 'Account',
+            'is_active' => true,
+            'username' => 'user-account',
+            'phone' => '0916622252',
+            'email_verified_at' => now(),
+            'address' => 'Ha Noi',
+        ]);
+
         $user = User::where('email', '=','bui.minh.dung@sun-asterisk.com')->first();
         $roleId = Role::where('role', '=','admin')->first();
+        $user->roles()->attach($roleId);
+
+        $user = User::where('email', '=','user@sun-asterisk.com')->first();
+        $roleId = Role::where('role', '=','user')->first();
         $user->roles()->attach($roleId);
     }
 }
