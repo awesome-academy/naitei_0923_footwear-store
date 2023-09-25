@@ -20,11 +20,26 @@ use App\Http\Controllers\UserController;
 
 Route::controller(ProductController::class)->group(function () {
 
+    Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
+
+        Route::get('/product', 'indexAdmin')->name('product.indexAdmin');
+
+        Route::get('/product/create', 'create')->name('product.create');
+
+        Route::post('/product', 'store')->name('product.store');
+
+        Route::get('/product/{product}/edit', 'edit')->name('product.edit');
+
+        Route::put('/product/{product}', 'update')->name('product.update');
+
+        Route::delete('/product/{product}', 'destroy')->name('product.destroy');
+    });
+
     Route::get('/', 'index')->middleware(['guest_verified_user'])->name('product.index');
 
     Route::get('/product/search', 'search')->middleware(['guest_verified_user'])->name('product.search');
 
-    Route::get('/product/{id}', 'show')->name('product.show');
+    Route::get('/product/{id}', 'show')->middleware(['guest_verified_user'])->name('product.show');
 
     Route::post('/product/add/{id}', 'addToCart')->middleware(['auth', 'verified'])->name('product.addToCart');
 });

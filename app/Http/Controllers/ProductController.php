@@ -4,11 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddToCartRequest;
 use App\Models\CartDetail;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Requests\User\StoreAdminUserRequest;
 use App\Models\Product;
 use App\Models\ProductInStock;
+use App\Models\ProductMedia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -47,7 +53,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('product.create');
     }
 
     /**
@@ -56,8 +62,53 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
+        $validatedData = $request->validated();
+        $validatedData['product_uuid'] = Str::uuid()->toString();
+
+        Product::create([
+            'product_uuid' => $validatedData['product_uuid'],
+            'brand' => $validatedData['brand'],
+            'name' => $validatedData['name'],
+        ]);
+
+        $productId = Product::where('product_uuid', $validatedData['product_uuid'])->first()->id;
+
+        if ($request->hasFile('big_image')) {
+            $fileName = time() . uniqid() . '.' . $request->get('brand')
+                . $request->get('name') . '.'
+                . $request->file('big_image')->extension();
+            $path = Storage::putFileAs('public/images/Product', $request->file('big_image'), $fileName);
+            $imageUrl = 'storage/images/Product/' . $fileName;
+            $validatedData['big_image'] = $imageUrl;
+            ProductMedia::create([
+                'product_id' => $productId,
+                'type' => 'big image',
+                'media_link' => $validatedData['big_image'],
+            ]);
+        }
+
+        if ($request->hasFile('small_image')) {
+            $images = $request->file('small_image');
+            foreach ($images as $key => $image) {
+                if ($image->isValid()) {
+                    $destinationPath = storage_path('app/public/images/Product');
+                    $extension = $image->getClientOriginalExtension();
+                    $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $fileName =  'small_image' . $originalName . '-' . uniqid() . '.' . $extension;
+                    $image->move($destinationPath, $fileName);
+
+                    ProductMedia::create([
+                        'product_id' => $productId,
+                        'type' => 'small image',
+                        'media_link' => 'storage/images/Product/' . $fileName,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('product.create')->with('status', 'product-created');
     }
 
     /**
@@ -87,12 +138,12 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  Product $product
      * @return \Illuminate\Http\Response
      */
     public function edit(Product $product)
     {
-        //
+        return view('product.edit', compact('product'));
     }
 
     /**
@@ -102,20 +153,66 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $validatedData = $request->validated();
+
+        $product->update([
+            'brand' => $validatedData['brand'],
+            'name' => $validatedData['name'],
+        ]);
+
+        if ($request->hasFile('big_image')) {
+            ProductMedia::where('product_id', $product->id)->where('type', 'big image')->delete();
+
+            $fileName = time() . uniqid() . '.' . $request->get('brand')
+                . $request->get('name') . '.'
+                . $request->file('big_image')->extension();
+            $path = Storage::putFileAs('public/images/Product', $request->file('big_image'), $fileName);
+            $imageUrl = 'storage/images/Product/' . $fileName;
+            $validatedData['big_image'] = $imageUrl;
+            ProductMedia::create([
+                'product_id' => $product->id,
+                'type' => 'big image',
+                'media_link' => $validatedData['big_image'],
+            ]);
+        }
+
+        if ($request->hasFile('small_image')) {
+            ProductMedia::where('product_id', $product->id)->where('type', 'small image')->delete();
+
+            $images = $request->file('small_image');
+            foreach ($images as $key => $image) {
+                if ($image->isValid()) {
+                    $destinationPath = storage_path('app/public/images/Product');
+                    $extension = $image->getClientOriginalExtension();
+                    $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $fileName =  'small_image' . $originalName . '-' . uniqid() . '.' . $extension;
+                    $image->move($destinationPath, $fileName);
+
+                    ProductMedia::create([
+                        'product_id' => $product->id,
+                        'type' => 'small image',
+                        'media_link' => 'storage/images/Product/' . $fileName,
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('product.edit', $product)->with('status', 'product-updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Product $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        $product->deleted_at = now();
+        $product->save();
+        return redirect()->route('product.edit', $product)->with('status', 'product-deleted');
     }
 
     public function search(Request $request)

@@ -259,6 +259,8 @@ return [
         'completed' => 'completed',
     ],
 
+    'no_product_image' => 'storage/images/logo/no-product-image.png',
+
     'message' => [
         'addToCart' => [
             'success' => 'Added to Cart successfully',

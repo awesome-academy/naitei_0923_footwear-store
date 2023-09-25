@@ -4,9 +4,8 @@ namespace App\View\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use LaravelViews\Filters\Filter;
-use App\Models\Product;
 
-class ProductBrandFilter extends Filter
+class DeletedProductFilter extends Filter
 {
     /**
      * Modify the current query when the filter is used
@@ -17,7 +16,11 @@ class ProductBrandFilter extends Filter
      */
     public function apply(Builder $query, $value, $request): Builder
     {
-        return $query->where('brand', $value);
+        if ($value === 'deleted_at') {
+            return $query->whereNotNull('deleted_at');
+        } else {
+            return $query->whereNull('deleted_at');
+        }
     }
 
     /**
@@ -27,13 +30,9 @@ class ProductBrandFilter extends Filter
      */
     public function options(): array
     {
-        $brandArray = array();
-        $productBrand = Product::select('brand')->distinct()->get();
-
-        foreach ($productBrand as $product) {
-            $brandArray[$product->brand] = $product->brand;
-        }
-
-        return $brandArray;
+        return [
+            'Deleted' => 'deleted_at',
+            'Not deleted' => 'not_deleted_at',
+        ];
     }
 }
