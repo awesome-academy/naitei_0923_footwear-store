@@ -20,7 +20,7 @@ class BillFactory extends Factory
             'total' => $this->faker->randomFloat(2, 10, 1000),
             'payment_method' => $this->faker->randomElement(['Credit Card', 'Bank Transfer', 'PayPal']),
             'shipping_method' => $this->faker->randomElement(['Standard Shipping', 'Express Shipping']),
-            'status' => $this->faker->randomElement(['Pending', 'Cancelled', 'Manual verification required', 'Confirmed', 'Declined', 'Awaiting shipment', 'Shipping', 'Shipped', 'Cant_ship', 'Completed']),
+            'status' => $this->faker->randomElement(['pending', 'cancelled', 'manual verification required', 'confirmed', 'declined', 'awaiting shipment', 'shipping', 'shipped', 'cant_ship', 'completed']),
             'address' => $this->faker->address(),
         ];
     }

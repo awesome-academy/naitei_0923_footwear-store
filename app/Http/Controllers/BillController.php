@@ -70,7 +70,7 @@ class BillController extends Controller
             ->where('bill_products.bill_id', '=', $id)
             ->where('product_media.type', '=', config('app.media.bigImg'))
             ->get();
-        $billInfo = Bill::select('total', 'date', 'payment_method', 'shipping_method', 'status', 'address')
+        $billInfo = Bill::select('id', 'total', 'date', 'payment_method', 'shipping_method', 'status', 'address')
             ->where('id', $id)
             ->first();
         return view('bill.show', compact('billItems', 'billInfo'));
@@ -108,5 +108,17 @@ class BillController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function changeStatus($id, $status)
+    {
+        $bill = Bill::find($id);
+        $bill->status = $status;
+        $bill->save();
+
+        return back()->with([
+            'message' => config('app.message.deleteCart.success'),
+            'status' => config('app.status.success'),
+        ]);
     }
 }

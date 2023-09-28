@@ -1,4 +1,9 @@
 <x-app-layout>
+    @if(Session::has('message'))
+        <div class="alert alert-success">
+            {{ Session::get('message') }}
+        </div>
+    @endif
     <h1 class="font-bold text-xl text-black dark:text-gray-200">
         {{ __('Bill History') }}
     </h1>

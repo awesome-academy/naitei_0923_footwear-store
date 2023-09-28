@@ -252,7 +252,7 @@ return [
         'manual' => 'manual verification required',
         'confirmed' => 'confirmed',
         'declined' => 'declined',
-        'awating' => 'awaiting shipment',
+        'awaiting' => 'awaiting shipment',
         'shipping' => 'being shipped',
         'shipped' => 'complete shipping',
         'cant_ship' => 'being returned',

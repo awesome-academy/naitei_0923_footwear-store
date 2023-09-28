@@ -87,6 +87,8 @@ Route::controller(BillController::class)->group(function () {
     Route::get('/bill', 'index')->middleware(['auth', 'verified'])->name('bill.index');
     
     Route::get('/bill/{bill}', 'show')->middleware(['auth', 'verified'])->name('bill.show');
+
+    Route::get('/bill/{id}/{status}', 'changeStatus')->name('bill.changeStatus');
 });
 
 Route::get('/admin/dashboard', function () {
