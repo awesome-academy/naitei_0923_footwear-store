@@ -4,6 +4,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductInStockController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -23,17 +24,21 @@ Route::controller(ProductController::class)->group(function () {
 
     Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
 
-        Route::get('/product', 'indexAdmin')->name('product.indexAdmin');
+        Route::get('/admin/product', 'indexAdmin')->name('product.indexAdmin');
 
-        Route::get('/product/create', 'create')->name('product.create');
+        Route::get('/admin/product/create', 'create')->name('product.create');
 
-        Route::post('/product', 'store')->name('product.store');
+        Route::post('/admin/product', 'store')->name('product.store');
 
-        Route::get('/product/{product}/edit', 'edit')->name('product.edit');
+        Route::get('/admin/product/{product}/edit', 'edit')->name('product.edit');
 
-        Route::put('/product/{product}', 'update')->name('product.update');
+        Route::put('/admin/product/{product}', 'update')->name('product.update');
 
-        Route::delete('/product/{product}', 'destroy')->name('product.destroy');
+        Route::delete('/admin/product/{product}', 'destroy')->name('product.destroy');
+
+        Route::post('/admin/product/{product}', 'recreate')->name('product.recreate');
+
+        Route::get('/admin/product/{product}', 'showAdmin')->name('product.showAdmin');
     });
 
     Route::get('/', 'index')->middleware(['guest_verified_user'])->name('product.index');
@@ -43,6 +48,15 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('/product/{id}', 'show')->middleware(['guest_verified_user'])->name('product.show');
 
     Route::post('/product/add/{id}', 'addToCart')->middleware(['auth', 'verified'])->name('product.addToCart');
+});
+
+Route::controller(ProductInStockController::class)->middleware(['auth', 'verified', 'role:admin'])->group(function () {
+
+    Route::get('/admin/productInStocks/{product}/create', 'create')->name('productInStocks.create');
+
+    Route::get('/admin/productInStocks/{productInStock}/edit', 'edit')->name('productInStocks.edit');
+
+    Route::delete('/admin/productInStocks/{productInStock}', 'destroy')->name('productInStocks.destroy');
 });
 
 Route::controller(CartController::class)->group(function () {
@@ -75,7 +89,7 @@ Route::controller(BillController::class)->group(function () {
     Route::get('/bill/{bill}', 'show')->middleware(['auth', 'verified'])->name('bill.show');
 });
 
-Route::get('/dashboard', function () {
+Route::get('/admin/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified', 'role:admin'])->name('dashboard');
 
@@ -85,7 +99,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('/users', UserController::class)
+Route::resource('/admin/users', UserController::class)
     ->middleware([
         'auth',
         'verified',

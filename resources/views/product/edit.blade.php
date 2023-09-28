@@ -26,29 +26,27 @@
                             </div>
 
                             <div class="w-full max-w-xs form-control">
-                                @if($product->productMedias->count() != 0)
+                                @if ($product->productMedias->count() != 0)
                                     <x-label for="big_image" :value="__('Your current thumbnail image')" />
                                     <img src="<?php echo asset($product->productMedias->where('type', 'big image')->first()->media_link) ?>" />
                                 @else
                                     {{__('This product don\'t have a thumbnail image')}}
                                 @endif
-                                <x-label for="big_image" :value="__('Attach a new thumbnail for your product')" />
-                                <x-input class="block w-full mt-1 form-control-file" type="file" accept="image/*" name="big_image" id="big_image" />                                
-                                <x-input-error class="mt-2" :messages="$errors->get('big_image')" />
+                                    <x-label for="big_image" :value="__('Attach a new thumbnail for your product')" />
+                                    <x-input class="block w-full mt-1 form-control-file" type="file" accept="image/*" name="big_image" id="big_image" />
+                                    <x-input-error class="mt-2" :messages="$errors->get('big_image')" />
                             </div>
 
                             <div class="w-full max-w-xs form-control">
                                 @if ($product->productMedias->where('type','small image')->count() == 0)
-                                    {{__('This product don\'t have any detail images')}}                                
+                                    {{__('This product don\'t have any detail images')}}
                                 @else
                                     <x-label for="small_image" :value="__('Your current detail images')" />
-                                    @foreach($product->productMedias->where('type','small image') as $productMedia)
-                                        <img src="<?php echo asset($productMedia->media_link) ?>" />
-                                    @endforeach
+                                    <x-small-image :smallImages="$product->productMedias->where('type','small image')"/>
                                 @endif
-                                <x-label for="small_image" :value="__('Attach new details images for your product')" />
-                                <x-input class="block w-full mt-1 form-control-file" type="file" accept="image/*" name="small_image[]" id="small_image" multiple />                                
-                                <x-input-error class="mt-2" :messages="$errors->get('small_image')" />
+                                    <x-label for="small_image" :value="__('Attach new details images for your product')" />
+                                    <x-input class="block w-full mt-1 form-control-file" type="file" accept="image/*" name="small_image[]" id="small_image" multiple />
+                                    <x-input-error class="mt-2" :messages="$errors->get('small_image')" />
                             </div>
 
                             <div class="flex items-center gap-4">
@@ -62,51 +60,99 @@
                     </section>
                 </div>
             </div>
-            <div class="p-4 bg-white shadow sm:p-8 sm:rounded-lg">
-                <div class="max-w-xl">
-                    <section class="space-y-6">
-                        <header>
-                        @if (session('status') === 'product-deleted')
-                            <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400">{{ __('Product is created.') }}</p>
-                            @endif
-                            <h2 class="text-lg font-medium text-gray-900 ">
-                                {{ __('Delete product') }}
-                            </h2>
-
-                            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {{ __('Once this product is deleted, all of its resources and data will be permanently deleted. Before deleting a product, please download any data or information that you wish to retain.') }}
-                            </p>
-                        </header>
-
-                        <x-danger-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-product-deletion')">{{ __('Delete this product') }}</x-danger-button>
-
-                        <x-modal name="confirm-product-deletion" :show="$errors->productDeletion->isNotEmpty()" focusable>
-                            <form method="post" action="{{ route('product.destroy', ['product' => $product]) }}" class="p-6">
-                                @csrf
-                                @method('delete')
-
-                                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    {{ __('Are you sure you want to delete this product?') }}
+            @if ($product->deleted_at == null)
+                <div class="p-4 bg-white shadow sm:p-8 sm:rounded-lg">
+                    <div class="max-w-xl">
+                        <section class="space-y-6">
+                            <header>
+                                @if (session('status') === 'product-recreated')
+                                    <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400">{{ __('Product is created.') }}</p>
+                                @endif
+                                <h2 class="text-lg font-medium text-gray-900 ">
+                                    {{ __('Delete product') }}
                                 </h2>
 
                                 <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ __('Once this product is deleted, all of its resources and data will be permanently deleted.') }}
+                                    {{ __('Once this product is deleted, all of its resources and data will be permanently deleted. Before deleting a product, please download any data or information that you wish to retain.') }}
                                 </p>
+                            </header>
 
-                                <div class="flex justify-end mt-6">
-                                    <x-secondary-button x-on:click="$dispatch('close')">
-                                        {{ __('Cancel') }}
-                                    </x-secondary-button>
+                            <x-danger-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-product-deletion')">{{ __('Delete this product') }}</x-danger-button>
 
-                                    <x-danger-button class="ml-3">
-                                        {{ __('Delete this product') }}
-                                    </x-danger-button>
-                                </div>
-                            </form>
-                        </x-modal>
-                    </section>
+                            <x-modal name="confirm-product-deletion" :show="$errors->productDeletion->isNotEmpty()" focusable>
+                                <form method="post" action="{{ route('product.destroy', ['product' => $product]) }}" class="p-6">
+                                    @csrf
+                                    @method('delete')
+
+                                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                        {{ __('Are you sure you want to delete this product?') }}
+                                    </h2>
+
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                        {{ __('Once this product is deleted, all of its resources and data will be permanently deleted.') }}
+                                    </p>
+
+                                    <div class="flex justify-end mt-6">
+                                        <x-secondary-button x-on:click="$dispatch('close')">
+                                            {{ __('Cancel') }}
+                                        </x-secondary-button>
+
+                                        <x-danger-button class="ml-3">
+                                            {{ __('Delete this product') }}
+                                        </x-danger-button>
+                                    </div>
+                                </form>
+                            </x-modal>
+                        </section>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="p-4 bg-white shadow sm:p-8 sm:rounded-lg">
+                    <div class="max-w-xl">
+                        <section class="space-y-6">
+                            <header>
+                                @if (session('status') === 'product-deleted')
+                                    <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400">{{ __('Product is recreated.') }}</p>
+                                @endif
+                                <h2 class="text-lg font-medium text-gray-900 ">
+                                    {{ __('Make this product available') }}
+                                </h2>
+
+                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                    {{ __('This action will make this product available in your store page.') }}
+                                </p>
+                            </header>
+
+                            <x-primary-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-product-recreation')">{{ __('Recreate this product') }}</x-primary-button>
+
+                            <x-modal name="confirm-product-recreation" :show="$errors->productDeletion->isNotEmpty()" focusable>
+                                <form method="post" action="{{ route('product.recreate', ['product' => $product]) }}" class="p-6">
+                                    @csrf
+                                    @method('post')
+
+                                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                        {{ __('Are you sure you want to recreate this product?') }}
+                                    </h2>
+
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                        {{ __('This action will make this product available in your store page.') }}
+                                    </p>
+
+                                    <div class="flex justify-end mt-6">
+                                        <x-secondary-button x-on:click="$dispatch('close')">
+                                            {{ __('Cancel') }}
+                                        </x-secondary-button>
+
+                                        <x-primary-button class="ml-3">
+                                            {{ __('Recreate this product') }}
+                                        </x-primary-button>
+                                    </div>
+                                </form>
+                            </x-modal>
+                        </section>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-admin-layout>

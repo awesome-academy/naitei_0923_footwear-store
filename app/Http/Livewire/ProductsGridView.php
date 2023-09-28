@@ -3,7 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\Product;
+use App\View\Actions\ShowProductAction;
 use App\View\Actions\UpdateProductAction;
+use App\View\Filters\DeletedProductFilter;
 use App\View\Filters\ProductBrandFilter;
 use Illuminate\Database\Eloquent\Builder;
 use LaravelViews\Views\GridView;
@@ -11,10 +13,20 @@ use LaravelViews\Views\GridView;
 class ProductsGridView extends GridView
 {
 
+    public function sortableBy()
+    {
+        return [
+            'Brand' => 'brand',
+            'Name' => 'name',
+        ];
+    }
+
+    /** For actions by item */
     protected function actionsByRow()
     {
         return [
             new UpdateProductAction,
+            new ShowProductAction,
         ];
     }
     public $maxCols = 4;
@@ -29,6 +41,7 @@ class ProductsGridView extends GridView
     {
         return [
             new ProductBrandFilter,
+            new DeletedProductFilter,
         ];
     }
 
@@ -51,6 +64,9 @@ class ProductsGridView extends GridView
     {
         $big_image = config('app.no_product_image');
         $product_media = $product->productMedias->where('type', 'big image')->first();
+        if ($product_media != null) {
+            $big_image = $product_media->media_link;
+        }
         $description = '';
         if ($product->deleted_at) {
             $description = __("This product has been deleted. It's unavailable now.");
@@ -67,11 +83,8 @@ class ProductsGridView extends GridView
                 }
             }
         }
-        if ($product_media != null) {
-            $big_image = $product_media->media_link;
-        }
         return [
-            'image' => $big_image,
+            'image' => asset($big_image),
             'brand' => $product->brand,
             'name' => $product->name,
             'description' => $description,
@@ -80,6 +93,6 @@ class ProductsGridView extends GridView
 
     public function onCardClick(Product $product)
     {
-        return redirect()->route('product.show', $product);
+        return redirect()->route('product.showAdmin', $product);
     }
 }

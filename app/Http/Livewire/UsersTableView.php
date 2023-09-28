@@ -71,7 +71,7 @@ class UsersTableView extends TableView
             $user->fullname,
             $user->username,
             $user->email,
-            $user->is_active ? UI::icon('check', 'success') : '',
+            $user->is_active ? UI::icon('check', 'success') : UI::icon('x', 'danger'),
             $roles,
             $user->phone,
             $user->address,

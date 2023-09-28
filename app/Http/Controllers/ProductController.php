@@ -6,7 +6,6 @@ use App\Http\Requests\AddToCartRequest;
 use App\Models\CartDetail;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
-use App\Http\Requests\User\StoreAdminUserRequest;
 use App\Models\Product;
 use App\Models\ProductInStock;
 use App\Models\ProductMedia;
@@ -136,6 +135,17 @@ class ProductController extends Controller
     }
 
     /**
+     * Display the product's detail for admin role.
+     *
+     * @param  Product $product
+     * @return \Illuminate\Http\Response
+     */
+    public function showAdmin(Product $product)
+    {
+        return view('product.showAdmin', compact('product'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  Product $product
@@ -210,9 +220,24 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
+        if ($product->deleted_at !== null) {
+            abort(403);
+        }
         $product->deleted_at = now();
         $product->save();
+        
         return redirect()->route('product.edit', $product)->with('status', 'product-deleted');
+    }
+
+    public function recreate(Product $product)
+    {
+        if ($product->deleted_at == null) {
+            abort(403);
+        }
+        $product->deleted_at = null;
+        $product->save();
+
+        return redirect()->route('product.edit', $product)->with('status', 'product-recreated');
     }
 
     public function search(Request $request)
@@ -221,7 +246,7 @@ class ProductController extends Controller
 
         $products = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.name', 'products.id', 'brand', 'media_link', 'gender','color','price','size'])
+            ->select(['products.name', 'products.id', 'brand', 'media_link', 'gender', 'color', 'price', 'size'])
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('products.name', 'like', '%' . $keyword . '%')
                     ->orWhere('brand', 'like', '%' . $keyword . '%');
