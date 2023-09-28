@@ -87,6 +87,6 @@ class OrderController extends Controller
             $cartItem->delete();
         }
 
-        return redirect()->route('product.index');
+        return redirect()->route('bill.index');
     }
 }

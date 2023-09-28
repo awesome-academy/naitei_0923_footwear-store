@@ -122,6 +122,9 @@ class ProductController extends Controller
         $product = Product::with(['productInStocks', 'productMedias'])->find($id);
         $name = $product->name;
         $sizes = $product->productInStocks->pluck('size');
+        $colors = $product->productInStocks->pluck('color');
+        $genders = $product->productInStocks->pluck('gender');
+        $types =  $product->productInStocks->pluck('type');
         $price = $product->productInStocks->pluck('price')->first();
         $imageQuery = $product->productMedias;
         $bigImage = $imageQuery->where('type', config('app.media.bigImg'))->pluck('media_link')->first();
@@ -130,7 +133,18 @@ class ProductController extends Controller
 
         return view(
             'product.show',
-            compact('id', 'name', 'price', 'sizes', 'bigImage', 'smallImages', 'suggestedProducts')
+            compact(
+                'id',
+                'name',
+                'price',
+                'sizes',
+                'bigImage',
+                'smallImages',
+                'suggestedProducts',
+                'colors',
+                'genders',
+                'types',
+            )
         );
     }
 
@@ -297,9 +311,15 @@ class ProductController extends Controller
         $validated = $request->validated();
         $size = $validated['size'];
         $quantity = $validated['quantity'];
+        $color = $validated['color'];
+        $gender = $validated['gender'];
+        $type = $validated['type'];
         $user_id = Auth::user()->id;
         $productInStocks = ProductInStock::where('product_id', $id)
             ->where('size', $size)
+            ->where('color', $color)
+            ->where('gender', $gender)
+            ->where('type', $type)
             ->get(['id', 'quantity'])
             ->first();
 
