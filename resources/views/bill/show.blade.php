@@ -41,19 +41,19 @@
                             <div class="flex justify-center items-center">
                                 <button class="bg-red-500 text-lg font-bold text-white py-2 px-4 rounded">{{ $billInfo->status }}</button>
                             </div>
-                            @if ($billInfo->status === 'Pending')
-                                    <div class="flex justify-center items-center mt-4">
-                                        <button class="bg-red-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                            {{ __('Cancelled') }}
-                                        </button>
-                                    </div>
-                                @elseif ($billInfo->status === 'Shipping')
-                                    <div class="flex justify-center items-center mt-4">
-                                        <button class="bg-red-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                                            {{ __('Shipped') }}
-                                        </button>
-                                    </div>
-                                @endif
+                            @if ($billInfo->status === 'pending')
+                                <div class="flex justify-center items-center mt-4">
+                                    <a href="{{ route('bill.changeStatus', ['id' => $billInfo->id, 'status' => 'cancelled']) }}" class="bg-red-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        {{ __('Cancelled') }}
+                                    </a>
+                                </div>
+                            @elseif ($billInfo->status === 'shipping')
+                                <div class="flex justify-center items-center mt-4">
+                                    <a href="{{ route('bill.changeStatus', ['id' => $billInfo->id, 'status' => 'shipped']) }}" class="bg-red-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        {{ __('Shipped') }}
+                                    </a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
