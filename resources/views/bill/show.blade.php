@@ -6,6 +6,15 @@
                     <div class="w-full p-4 px-5 py-5">
                         <div class="">
                             <div class="col-span-2 p-5">
+                                @if ($status = Session::get('status') === true)
+                                    <button x-data="{ open: true }">
+                                        <span class="text-red-500 font-medium text-lg mx-5" 
+                                            x-show="open" 
+                                            @click="open = !open">
+                                            {{ __(Session::get('message')) }}
+                                        </span>
+                                    </button>
+                                @endif
                                 <h1 class="text-xl font-medium ">{{ __('Bill Detail') }}</h1>
                                 @foreach($billItems as $billItem)
                                     <x-bill-item id="{{ $billItem->id }}" 
@@ -53,6 +62,14 @@
                                         {{ __('Shipped') }}
                                     </a>
                                 </div>
+                            @elseif ($billInfo->status === 'shipped')
+                                @foreach($billItems as $billItem)
+                                    <div class="flex justify-start items-center mt-4">
+                                    <a href="{{ route('review.create', ['billId' => $billInfo->id, 'id' => $billItem->product_id]) }}">
+                                        <x-primary-button> {{ __('Comment for :item', ['item' => $billItem->name]) }} </x-primary-button>
+                                    </a>
+                                    </div>
+                                @endforeach
                             @endif
                         </div>
                     </div>
