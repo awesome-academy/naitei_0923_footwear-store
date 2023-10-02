@@ -7,6 +7,7 @@
                 </a>
             </div>
             <div class="p-4 bg-white shadow sm:p-8 sm:rounded-lg">
+            <x-label :value="__('Edit product: ' . $product->name)" />
                 <div class="max-w-xl">
                     <section>
                         <form method="post" action="{{ route('product.update' ,['product' => $product]) }}" enctype="multipart/form-data" class="mt-6 space-y-6">

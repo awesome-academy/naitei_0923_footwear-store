@@ -11,7 +11,7 @@ class UpdateProductAction extends Action
      * Any title you want to be displayed
      * @var String
      * */
-    public $title = 'Update Product';
+    public $title = "Update this product";
 
     /**
      * This should be a valid Feather icon string
@@ -27,6 +27,7 @@ class UpdateProductAction extends Action
      */
     public function handle($model, View $view)
     {
+        $this->title = __('Update this product');
         return redirect()->route('product.edit', $model);
     }
 }

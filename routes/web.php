@@ -55,6 +55,10 @@ Route::controller(ProductInStockController::class)->middleware(['auth', 'verifie
 
     Route::get('/admin/productInStocks/{product}/create', 'create')->name('productInStocks.create');
 
+    Route::post('/admin/productInStocks/{product}', 'store')->name('productInStocks.store');
+
+    Route::put('/admin/productInStocks/{productInStock}', 'update')->name('productInStocks.update');
+
     Route::get('/admin/productInStocks/{productInStock}/edit', 'edit')->name('productInStocks.edit');
 
     Route::delete('/admin/productInStocks/{productInStock}', 'destroy')->name('productInStocks.destroy');
@@ -78,11 +82,6 @@ Route::controller(ReviewController::class)->group(function () {
     Route::post('review/{id}/{billId}', 'store')->middleware(['auth', 'verified'])->name('review.store');
 });
 
-Route::get('/product', [ProductController::class, 'indexAdmin'])->middleware([
-    'auth',
-    'verified',
-    'role:admin',
-])->name('product.indexAdmin');
 Route::controller(OrderController::class)->group(function () {
 
     Route::get('/checkout', 'index')->middleware(['auth', 'verified'])->name('order.index');

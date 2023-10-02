@@ -128,7 +128,7 @@ class ProductController extends Controller
         $price = $product->productInStocks->pluck('price')->first();
         $imageQuery = $product->productMedias;
         $bigImage = $imageQuery->where('type', config('app.media.bigImg'))->pluck('media_link')->first();
-        $smallImages =  $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
+        $smallImages = $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
         $suggestedProducts = ProductController::findSuggestedProduct();
 
         return view(
