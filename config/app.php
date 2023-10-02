@@ -270,6 +270,10 @@ return [
             'success' => 'Deleted item from Cart successfully',
             'fail' => "Can't delete from cart",
         ],
+        'addReview' => [
+            'success' => 'Add review successfully',
+            'fail' => "Can't add review",
+        ]
     ],
 
     'price_ranges' => [

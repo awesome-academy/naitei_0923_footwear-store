@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductInStockController;
@@ -68,6 +69,13 @@ Route::controller(CartController::class)->group(function () {
     Route::post('/cart/checkout', 'checkout')->name('cart.checkout');
 
     Route::post('/cart/{id}', 'destroy')->name('cart.destroy');
+});
+
+Route::controller(ReviewController::class)->group(function () {
+    
+    Route::get('review/create/{id}/{billId}', 'create')->middleware(['auth', 'verified'])->name('review.create');
+
+    Route::post('review/{id}/{billId}', 'store')->middleware(['auth', 'verified'])->name('review.store');
 });
 
 Route::get('/product', [ProductController::class, 'indexAdmin'])->middleware([
