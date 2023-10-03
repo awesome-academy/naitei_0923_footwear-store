@@ -20,11 +20,6 @@ class ShowProductAction extends Action
      */
     public $icon = "eye";
 
-    public function __construct()
-    {
-        $this->title = __("Product's details");
-    }
-
     /**
      * Execute the action when the user clicked on the button
      *
@@ -33,6 +28,7 @@ class ShowProductAction extends Action
      */
     public function handle($model, View $view)
     {
+        $this->title = __("Product's details");
         return redirect()->route('product.showAdmin', $model);
     }
 }

@@ -8,6 +8,7 @@
             </div>
 
             <div class="p-4 bg-white shadow sm:p-8 sm:rounded-lg">
+                <x-label :value="__('Create a new product)" />
                 <div class="max-w-xl">
                     <!-- Validation Errors -->
                     <x-auth-validation-errors class="mb-4" :errors="$errors" />
