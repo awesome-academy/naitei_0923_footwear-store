@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 
 class CheckAccessForGuestAndVerifiedUser
@@ -25,6 +26,12 @@ class CheckAccessForGuestAndVerifiedUser
                 return $request->expectsJson()
                     ? abort(403, __('Your email address is not verified.'))
                     : Redirect::guest(URL::route($redirectToRoute ?: 'verification.notice'));
+            } elseif (!$request->user()->is_active) {
+                Session::flush();
+                
+                return back()->with('error', 'Your account is deactived. Please contact us for more information.');
+            } elseif (Auth::user()->hasRole('admin')) {
+                return redirect()->route('dashboard');
             } else {
                 return $next($request);
             }

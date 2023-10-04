@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Product;
+use App\View\Actions\UpdateProductAction;
 use LaravelViews\Facades\UI;
 use LaravelViews\Views\DetailView;
 
@@ -16,6 +17,13 @@ class ProductDetailView extends DetailView
         return [
             __("Product: {$model->name}"),
             __("This is the details of {$model->name}"),
+        ];
+    }
+
+    protected function actions()
+    {
+        return [
+            new UpdateProductAction,
         ];
     }
 
@@ -51,11 +59,13 @@ class ProductDetailView extends DetailView
                 $product_in_stocks = $status;
                 foreach ($model->productInStocks as $productInStock) {
                     if ($productInStock->quantity != 0) {
-                        $status = __("This product is available.");
+                        $status = "This product is available.";
                         $product_in_stocks = UI::component(
                             'components.product-in-stock-table',
-                            ['headers' => ['Size', 'Type', 'Color', 'Gender', 'Price', 'Quantity'],
-                            'rows' => $model->productInStocks,]
+                            [
+                                'headers' => ['Size', 'Type', 'Color', 'Gender', 'Price', 'Quantity'],
+                                'rows' => $model->productInStocks->sortBy('size'),
+                            ]
                         );
                         break;
                     }
