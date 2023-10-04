@@ -16,13 +16,26 @@ class Product extends Component
     public $mediaLink;
     public $name;
     public $price;
+    public $color;
+    public $gender;
+    public $type;
 
-    public function __construct(string $id, string $mediaLink, string $name, float $price)
-    {
+    public function __construct(
+        string $id,
+        string $mediaLink,
+        string $name,
+        float $price,
+        string $color,
+        string $gender,
+        string $type
+    ) {
         $this->id = $id;
         $this->mediaLink = $mediaLink;
         $this->name = $name;
         $this->price = $price;
+        $this->color = $color;
+        $this->gender = $gender;
+        $this->type = $type;
     }
 
     /**

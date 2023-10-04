@@ -19,8 +19,22 @@ class CartItem extends Component
     public $price;
     public $quantity;
     public $fullPrice;
-    public function __construct(int $id, int $productId, string $name, int $quantity, float $price, string $mediaLink)
-    {
+    public $color;
+    public $gender;
+    public $type;
+    public $size;
+    public function __construct(
+        int $id,
+        int $productId,
+        string $name,
+        int $quantity,
+        float $price,
+        string $mediaLink,
+        string $color,
+        string $gender,
+        string $type,
+        string $size
+    ) {
         $this->id = $id;
         $this->productId = $productId;
         $this->name = $name;
@@ -29,6 +43,10 @@ class CartItem extends Component
         $this->mediaLink = $mediaLink;
         $this->quantity = $quantity;
         $this->fullPrice = $price * $quantity;
+        $this->color = $color;
+        $this->gender = $gender;
+        $this->type = $type;
+        $this->size = $size;
     }
 
     /**

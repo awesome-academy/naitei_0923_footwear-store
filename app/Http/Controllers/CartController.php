@@ -22,10 +22,15 @@ class CartController extends Controller
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
             ->select([
                 'product_in_stocks.product_id',
-                'products.name', 'cart_details.quantity',
+                'products.name',
+                'cart_details.quantity',
                 'product_in_stocks.price',
                 'product_media.media_link',
                 'cart_details.id',
+                'product_in_stocks.type',
+                'color',
+                'gender',
+                'size',
             ])
             ->where('cart_details.user_id', '=', $user_id)
             ->where('product_media.type', '=', config('app.media.bigImg'))
@@ -38,20 +43,44 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems', 'subTotal'));
     }
 
-    public function updateQuantity(Request $request, $update, $id)
+    public function increaseQuantity(Request $request, $id)
     {
         $cartItem = CartDetail::with('productInStocks')->find($id);
         $quantity = $cartItem->quantity;
-        if ($update === 'increment') {
-            $cartItem->quantity = $quantity + 1;
-        } else {
-            $cartItem->quantity = $quantity - 1;
+        $stocksQuantity = $cartItem->productInStocks->first()->quantity;
+        if ($stocksQuantity < $quantity + 1) {
+            return response()->json([
+                'message' => __('messages.increaseCart.fail'),
+                'status' => config('app.status.fail'),
+            ]);
         }
+        $cartItem->quantity = $quantity + 1;
         $cartItem->save();
 
         return response()->json([
             'quantity' => $cartItem->quantity,
             'price' => $cartItem->productInStocks->pluck('price')->first(),
+            'status' => config('app.status.success'),
+        ]);
+    }
+
+    public function decreaseQuantity(Request $request, $id)
+    {
+        $cartItem = CartDetail::with('productInStocks')->find($id);
+        $quantity = $cartItem->quantity;
+        if ($quantity === 1) {
+            return response()->json([
+                'message' => __('messages.decreaseCart.fail'),
+                'status' => config('app.status.fail'),
+            ]);
+        }
+        $cartItem->quantity = $quantity - 1;
+        $cartItem->save();
+
+        return response()->json([
+            'quantity' => $cartItem->quantity,
+            'price' => $cartItem->productInStocks->pluck('price')->first(),
+            'status' => config('app.status.success'),
         ]);
     }
     /**
@@ -63,7 +92,7 @@ class CartController extends Controller
         $cartItem->delete();
 
         return back()->with([
-            'message' => config('app.message.deleteCart.success'),
+            'message' => __('messages.deleteCart.success'),
             'status' => config('app.status.success'),
         ]);
     }

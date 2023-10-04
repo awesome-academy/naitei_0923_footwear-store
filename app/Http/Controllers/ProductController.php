@@ -26,8 +26,19 @@ class ProductController extends Controller
     {
         $products = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.name', 'price', 'products.id', 'brand', 'media_link'])
+            ->select([
+                'products.name',
+                'price',
+                'products.id',
+                'brand',
+                'color',
+                'media_link',
+                'gender',
+                'product_in_stocks.type',
+            ])
             ->where('product_media.type', '=', config('app.media.bigImg'))
+            ->groupByRaw('name, price, products.id, brand, color, media_link, gender, product_in_stocks.type')
+            ->limit(config('app.homepage.productQuantity'))
             ->get();
 
         return view('home', [
@@ -116,20 +127,22 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         //get product
+        $color = $request->query('color');
+        $gender = $request->query('gender');
+        $type = $request->query('type');
         $product = Product::with(['productInStocks', 'productMedias'])->find($id);
         $name = $product->name;
         $sizes = $product->productInStocks->pluck('size');
-        $colors = $product->productInStocks->pluck('color');
-        $genders = $product->productInStocks->pluck('gender');
-        $types =  $product->productInStocks->pluck('type');
+        $color = $product->productInStocks->where('color', $color)->pluck('color')->first();
+        $gender = $product->productInStocks->where('gender', $gender)->pluck('gender')->first();
+        $type =  $product->productInStocks->where('type', $type)->pluck('type')->first();
         $price = $product->productInStocks->pluck('price')->first();
         $imageQuery = $product->productMedias;
-        $bigImage = $imageQuery->where('type', config('app.media.bigImg'))->pluck('media_link')->first();
-        $smallImages = $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
-        $suggestedProducts = ProductController::findSuggestedProduct();
+        $smallImages =  $imageQuery->where('type', config('app.media.smallImg'))->pluck('media_link');
+        $suggestedProducts = ProductController::findSuggestedProduct($product);
 
         return view(
             'product.show',
@@ -138,12 +151,11 @@ class ProductController extends Controller
                 'name',
                 'price',
                 'sizes',
-                'bigImage',
                 'smallImages',
                 'suggestedProducts',
-                'colors',
-                'genders',
-                'types',
+                'color',
+                'gender',
+                'type',
             )
         );
     }
@@ -239,7 +251,7 @@ class ProductController extends Controller
         }
         $product->deleted_at = now();
         $product->save();
-        
+
         return redirect()->route('product.edit', $product)->with('status', 'product-deleted');
     }
 
@@ -260,11 +272,22 @@ class ProductController extends Controller
 
         $products = Product::join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.name', 'products.id', 'brand', 'media_link', 'gender', 'color', 'price', 'size'])
+            ->select([
+                'products.name',
+                'price',
+                'products.id',
+                'brand',
+                'color',
+                'media_link',
+                'gender',
+                'product_in_stocks.type',
+            ])
+            ->where('product_media.type', '=', config('app.media.bigImg'))
             ->where(function ($query) use ($keyword) {
                 $query->orWhere('products.name', 'like', '%' . $keyword . '%')
                     ->orWhere('brand', 'like', '%' . $keyword . '%');
-            });
+            })
+            ->groupByRaw('name, price, products.id, brand, color, media_link, gender, product_in_stocks.type');
 
         if (!empty($request->price)) {
             $price = $request->price;
@@ -294,26 +317,38 @@ class ProductController extends Controller
         return view('product.search', compact('products', 'keyword'));
     }
 
-    public function findSuggestedProduct()
+    public function findSuggestedProduct($product)
     {
         $suggestedProducts = DB::table('products')
             ->join('product_in_stocks', 'products.id', '=', 'product_in_stocks.product_id')
             ->join('product_media', 'products.id', '=', 'product_media.product_id')
-            ->select(['products.id', 'media_link', 'name', 'price'])
+            ->select([
+                'products.name',
+                'price',
+                'products.id',
+                'brand',
+                'color',
+                'media_link',
+                'gender',
+                'product_in_stocks.type',
+            ])
             ->where('product_media.type', '=', config('app.media.bigImg'))
+            ->where('brand', $product->brand)
+            ->groupByRaw('name, price, products.id, brand, color, media_link, gender, product_in_stocks.type')
+            ->limit(config('app.homepage.productQuantity'))
             ->get();
 
         return $suggestedProducts;
     }
 
-    public function addToCart(AddToCartRequest $request, $id)
+    public function addToCart(Request $request)
     {
-        $validated = $request->validated();
-        $size = $validated['size'];
-        $quantity = $validated['quantity'];
-        $color = $validated['color'];
-        $gender = $validated['gender'];
-        $type = $validated['type'];
+        $id = $request->id;
+        $size = $request->size;
+        $quantity = $request->quantity;
+        $type = $request->query('type');
+        $color = $request->query('color');
+        $gender = $request->query('gender');
         $user_id = Auth::user()->id;
         $productInStocks = ProductInStock::where('product_id', $id)
             ->where('size', $size)
@@ -332,11 +367,27 @@ class ProductController extends Controller
             $productInStocks->quantity,
             $quantity
         );
+        if ($cartItem->quantity === null) {
+            if ($available < $quantity) {
+                return back()->with([
+                    'message' => __('messages.addToCart.outOfStocks', ['quantity' => $available]),
+                    'status' => config('app.status.success'),
+                ]);
+            }
+        } else {
+            if ($productInStocks->quantity < $cartItem->quantity + $quantity) {
+                return back()->with([
+                    'message' => __('messages.addToCart.outOfStocks') . $available . ' products more',
+                    'status' => config('app.status.success'),
+                ]);
+            }
+            $available = $cartItem->quantity + $quantity;
+        }
         $cartItem->quantity = $available;
         $cartItem->save();
 
         return back()->with([
-            'message' => config('app.message.addToCart.success'),
+            'message' => __('messages.addToCart.success'),
             'status' => config('app.status.success'),
         ]);
     }
@@ -362,7 +413,7 @@ class ProductController extends Controller
         } else {
             $totalQuantity = $expectQuantity + $cartItem->quantity;
             if ($stocksQuantity <= $totalQuantity) {
-                $availableQuantity = $stocksQuantity;
+                $availableQuantity = $stocksQuantity -  $cartItem->quantity;
             } else {
                 $availableQuantity = $totalQuantity;
             }

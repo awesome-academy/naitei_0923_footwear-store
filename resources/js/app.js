@@ -23,18 +23,27 @@ Alpine.start();
         request.onreadystatechange = function () {
             if (this.readyState === 4 && this.status === 200) {
                 const response = JSON.parse(this.responseText);
-                document.getElementById(id).value = response.quantity;
-                document.getElementById("fullprice-" + id).innerHTML =
-                    response.quantity * response.price;
-                const subTotal = document.getElementById("sub-total");
-                if (action === "increment") {
-                    subTotal.innerText =
-                        parseFloat(subTotal.innerText) +
-                        parseFloat(response.price);
-                } else {
-                    subTotal.innerText =
-                        parseFloat(subTotal.innerText) -
-                        parseFloat(response.price);
+                if (response.status === true){
+                    document.getElementById(id).innerText = response.quantity;
+                    document.getElementById("fullprice-" + id).innerHTML =
+                        response.quantity * response.price;
+                    const subTotal = document.getElementById("sub-total");
+                    if (action === "increment") {
+                        subTotal.innerText =
+                            parseFloat(subTotal.innerText) +
+                            parseFloat(response.price);
+                    } else {
+                        subTotal.innerText =
+                            parseFloat(subTotal.innerText) -
+                            parseFloat(response.price);
+                    }
+                }
+                else{
+                    document.getElementById('noti').innerHTML = response.message;
+                    const noti = setTimeout(()=>{
+                        document.getElementById('noti').innerHTML = "";
+                        clearTimeout(noti);
+                    },2000)
                 }
             }
         };

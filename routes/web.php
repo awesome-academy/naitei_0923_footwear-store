@@ -68,7 +68,9 @@ Route::controller(CartController::class)->group(function () {
 
     Route::get('/cart', 'index')->middleware(['auth', 'verified'])->name('cart.index');
 
-    Route::get('/cart/{update}/{id}', 'updateQuantity')->name('cart.update');
+    Route::get('/cart/increment/{id}', 'increaseQuantity')->name('cart.increase');
+
+    Route::get('/cart/decrement/{id}', 'decreaseQuantity')->name('cart.decrease');
 
     Route::post('/cart/checkout', 'checkout')->name('cart.checkout');
 
