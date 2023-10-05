@@ -17,4 +17,9 @@ return [
         'success' => 'Decreased successfully',
         'fail' => "Can't decrease item",
     ],
+    'addToFavourite' => [
+        'added' => 'Added to Favourites',
+        'removed' => "Removed from Favourites",
+        'fail' => "Can't add item to Favourites",
+    ],
 ];

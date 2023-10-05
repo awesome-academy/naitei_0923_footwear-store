@@ -3,6 +3,7 @@
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\FavouriteListController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductInStockController;
@@ -94,10 +95,17 @@ Route::controller(OrderController::class)->group(function () {
 Route::controller(BillController::class)->group(function () {
 
     Route::get('/bill', 'index')->middleware(['auth', 'verified'])->name('bill.index');
-    
+
     Route::get('/bill/{bill}', 'show')->middleware(['auth', 'verified'])->name('bill.show');
 
     Route::get('/bill/{id}/{status}', 'changeStatus')->name('bill.changeStatus');
+});
+
+Route::middleware(['auth', 'verified'])->controller(FavouriteListController::class)->group(function () {
+
+    Route::get('/favourite', 'index')->name('favourite.index');
+
+    Route::post('/favourite', 'addToFavourite')->name('favourite.addToFavourite');
 });
 
 Route::get('/admin/dashboard', function () {
