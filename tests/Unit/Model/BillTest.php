@@ -11,7 +11,14 @@ class BillTest extends TestCase
 {
     public function testModelConfiguration()
     {
-        $this->runConfigurationAssertions(new Bill(), [], [], ['total', 'status'], [], ['id' => 'int']);
+        $this->runConfigurationAssertions(
+            new Bill(),
+            [],
+            [],
+            ['total', 'status'],
+            [],
+            ['id' => 'int', 'date' => 'datetime'],
+        );
     }
 
     public function testUserRelation()

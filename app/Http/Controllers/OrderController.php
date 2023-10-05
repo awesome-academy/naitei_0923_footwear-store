@@ -46,6 +46,11 @@ class OrderController extends Controller
         );
     }
 
+    public function indexAdmin()
+    {
+        return view('order.indexAdmin');
+    }
+
     public function calculateShippingFee($billTotal, $address)
     {
         return $billTotal * config('app.shipping.fee.default'); // shipping fee = 50% bill
@@ -69,7 +74,7 @@ class OrderController extends Controller
             'date' => date('Y-m-d', time()),
         ]);
         $bill->total = $totalPayment;
-        $bill->status = config('app.status.pending');
+        $bill->status = config('app.bill_status.pending');
         $bill->save();
         $bill_id = Bill::where('user_id', $user->id)->get()->last()->id;
         $cartItems = CartDetail::with('productInStocks')->where('user_id', $user->id)->get();
@@ -88,5 +93,23 @@ class OrderController extends Controller
         }
 
         return redirect()->route('bill.index');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Bill  $bill
+     * @return \Illuminate\Http\Response
+     */
+    public function showAdmin(Bill $bill)
+    {
+        $bill = Bill::with([
+            'user',
+            'billProducts',
+            'billProducts.productInStock',
+            'billProducts.productInStock.product',
+        ])->find($bill->id);
+
+        return view('order.show', ['bill' => $bill]);
     }
 }
