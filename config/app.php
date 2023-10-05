@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Footwear Store'),
 
     /*
     |--------------------------------------------------------------------------
@@ -248,16 +248,19 @@ return [
     'status' => [
         'success' => true,
         'fail' => false,
-        'pending' => 'pending',
-        'cancelled' => 'cancelled',
-        'manual' => 'manual verification required',
-        'confirmed' => 'confirmed',
-        'declined' => 'declined',
-        'awaiting' => 'awaiting shipment',
-        'shipping' => 'being shipped',
-        'shipped' => 'complete shipping',
-        'cant_ship' => 'being returned',
-        'completed' => 'completed',
+    ],
+
+    'bill_status' => [
+        'pending' => 'Pending',
+        'cancelled' => 'Cancelled',
+        'confirmed' => 'Confirmed',
+        'declined' => 'Declined',
+        'manual' => 'Manual verification required',
+        'awating' => 'Awaiting shipment',
+        'shipping' => 'Being shipped',
+        'shipped' => 'Complete shipping',
+        'cant_ship' => 'Being returned',
+        'completed' => 'Completed',
     ],
 
     'no_product_image' => 'storage/images/logo/no-product-image.png',
@@ -299,6 +302,7 @@ return [
 
     'shipping' => [
         'default' => 'regular',
+        'express' => 'Express shipping',
         'fee' => [
             'default' => 0.5,
         ],

@@ -33,7 +33,7 @@
                         </div>
 
                         <div>
-                            <x-label for="gender" :value="__('Gender')" />
+                            <x-label for="gender" :value="__('Gender: Male, Female, Unisex, Other')" />
                             <x-input id="gender" class="block w-full mt-1" type="text" name="gender" :value="old('gender')" required autofocus autocomplete="gender" />
                             <x-input-error class="mt-2" :messages="$errors->get('gender')" />
                         </div>
