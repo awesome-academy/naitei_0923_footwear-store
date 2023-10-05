@@ -18,7 +18,7 @@ abstract class ModelTestCase extends TestCase
         $hidden = [],
         $guarded = ['*'],
         $visible = [],
-        $casts = ['id' => 'int'],
+        $casts = ['id' => 'int', 'date' => 'datetime'],
         $dates = ['created_at', 'updated_at'],
         $primaryKey = 'id',
         $table = null,
@@ -87,7 +87,7 @@ abstract class ModelTestCase extends TestCase
         if (is_null($parentKey)) {
             $parentKey = $model->getKeyName();
         }
-        $this->assertEquals($model->getTable().'.'.$parentKey, $relation->getQualifiedParentKeyName());
+        $this->assertEquals($model->getTable() . '.' . $parentKey, $relation->getQualifiedParentKeyName());
     }
 
     protected function assertBelongsToRelation(

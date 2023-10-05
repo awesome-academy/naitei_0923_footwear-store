@@ -27,6 +27,12 @@ class BillProductTest extends TestCase
         $model = new BillProduct();
         $relation = $model->productInStock();
 
-        $this->assertBelongsToRelation($relation, new BillProduct(), new ProductInStock(), 'product_in_stock_id', 'id');
+        $this->assertBelongsToRelation(
+            $relation,
+            new BillProduct(),
+            new ProductInStock(),
+            'product_in_stocks_id',
+            'id'
+        );
     }
 }
